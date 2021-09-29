@@ -1,0 +1,227 @@
+#+options: ':nil *:t -:t ::t <:t H:3 \n:nil ^:t arch:headline
+#+options: author:t broken-links:nil c:nil creator:nil
+#+options: d:(not "LOGBOOK") date:t e:t email:nil f:t inline:t num:t
+#+options: p:nil pri:nil prop:nil stat:t tags:t tasks:t tex:t
+#+options: timestamp:t title:t toc:t todo:t |:t
+#+title: cdr255 Website
+#+date: <2021-09-29 Wed>
+#+author: Christopher Rodriguez
+#+email: cdr255@gmail.com
+#+language: en
+#+select_tags: export
+#+exclude_tags: noexport
+#+options: html-link-use-abs-url:nil html-postamble:auto
+#+options: html-preamble:t html-scripts:t html-style:t
+#+options: html5-fancy:nil tex:t
+#+html_doctype: xhtml-strict
+#+html_container: div
+#+description:
+#+keywords:
+#+html_link_home:
+#+html_link_up:
+#+html_mathjax:
+#+html_equation_reference_format: \eqref{%s}
+#+html_head:
+#+html_head_extra:
+#+subtitle:
+#+infojs_opt:
+#+creator: <a href="https://www.gnu.org/software/emacs/">Emacs</a> 28.0.50 (<a href="https://orgmode.org">Org</a> mode 9.4.6)
+#+latex_header:
+#+texinfo_filename:
+#+texinfo_class: info
+#+texinfo_header:
+#+texinfo_post_header:
+#+subtitle:
+#+subauthor:
+#+texinfo_dir_category:
+#+texinfo_dir_title:
+#+texinfo_dir_desc:
+#+texinfo_printed_title:
+#+man_class:
+#+man_class_options:
+#+man_header:
+#+property: header-args :mkdirp yes
+* Overview
+  This is the literate programming file for my [[https://cdr255.com][main website]], which I'm
+  using to convert my old website into an org-based format (and then
+  keep it up to date).
+* Build Script
+  I'm basing this concept off of the [[https://www.youtube.com/watch?v=AfkrzFodoNw][System Crafters]] tutorial which
+  was recently posted.
+
+  The tutorial splits the build into an Elisp script that does all of
+  the actual work, and a bash script that wraps it for an easier CI
+  integration in the future.
+
+  I don't think I'll need the CI integration here, but there's no real
+  reason /not/ to separate it out like that.
+** Elisp Build Script
+   #+begin_src elisp :tangle bin/build-site.el
+     ;; Initialize Packaging System
+     (require 'package)
+     (setq package-user-dir (expand-file-name "./.packages")
+           package-archives '(("melpa" . "https://melpa.org/packages/")
+                              ("elpa" . "https://elpa.gnu.org/packages/")))
+     (package-initialize)
+     (unless package-archive-contents
+       (package-refresh-contents))
+     
+     ;; Install Dependencies
+     (package-install 'htmlize)
+     
+     ;; Load the Publishing System
+     (require 'ox-publish)
+     
+     ;; Customize our Variables
+     (setq org-html-head-include-scripts nil ;; We're gonna use our own JS
+           org-html-head-include-default-style nil  ;; We're gonna use our own CSS
+           org-html-style "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css\">"
+           org-html-head-extra "<meta charset=\"utf-8\">
+     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
+     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
+     <meta property=\"og:title\" content=\"cdr255\" />
+     <meta name=\"author\" content=\"Christopher Rodriguez\" />
+     <meta property=\"og:locale\" content=\"en_US\" />
+     <link rel=\"canonical\" href=\"http://cdr255.com/\" />"
+           org-html-doctype "html5")
+     
+     ;; Define our Publish Targets
+     (setq org-publish-project-alist
+           (list
+            (list "my-org-site"
+                  :recursive t
+                  :base-directory "./content"
+                  :publishing-directory "./public"
+                  :publishing-function 'org-html-publish-to-html
+                  :with-author nil
+                  :with-creator t
+                  :with-toc nil
+                  :section-numbers nil
+                  :time-stamp-file nil
+                  :auto-sitemap t
+                  :makeindex t
+                  :html-preamble "<header><nav class=\"navbar\" role=\"navigation\" aria-label=\"main navigation\"><div class=\"navbar-brand\"><a href=\"https://cdr255.com\" class=\"navbar-item\"><h1>cdr255</h1></a><a role=\"button\" class=\"navbar-burger\" aria-label=\"menu\" aria-expanded=\"false\"><span aria-hidden=\"true\"></span><span aria-hidden=\"true\"></span><span aria-hidden=\"true\"></span></a></div><div class=\"navbar-menu\"><div class=\"navbar-start\"><a class=\"navbar-item\" href=\"/\">Home</a><a class=\"navbar-item\" href=\"/about/\">About</a><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Music</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/lessons/\">Lessons</a><a class=\"navbar-item\" href=\"/compositions/\">Compositions</a><a class=\"navbar-item\" href=\"/recordings/\">Recordings</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Games</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/games/\">My Games</a><a class=\"navbar-item\" href=\"/logs/\">TTRPG Logs</a><a class=\"navbar-item\" href=\"/reviews/\">Reviews</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Fiction</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/novels\"/>Novel Drafts</a><a class=\"navbar-item\" href=\"/serials/\">Serial Fiction</a><a class=\"navbar-item\" href=\"/tintenn/\">Tintenn Archive</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Computers</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/software/\">Software</a><a class=\"navbar-item\" href=\"/support/\">Tech Support</a><a href=\"/linux/\">GNU/Linux</a><a class=\"navbar-item\" href=\"/howtos/\">How-Tos</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Misc</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/links/\">Links</a><a class=\"navbar-item\" href=\"/conlangs/\">Conlangs</a><a class=\"navbar-item\" href=\"/collections/\">Collections</a><a class=\"navbar-item\" href=\"/stuff/\">Other Stuff</a></div></div></div><div class=\"navbar-end\"><div class=\"navbar-item\"><div class=\"buttons\"><a class=\"button is-primary\" href=\"https://yewscion.com\">Blog</a><a class=\"button is-link\" href=\"https://tumblingowl.com\">Games</a></div></div></div></div></nav></header>")))
+     
+     ;; Publish Everything!
+     (org-publish-all t)
+     
+     ;; Tell the User
+     (message "Build Complete!")
+     
+   #+end_src
+** Bash Wrapper Script
+   #+begin_src bash :shebang #!/usr/bin/env bash :tangle build.sh
+     emacs -Q --script ./bin/build-site.el
+   #+end_src
+* Pages
+** Index
+   #+begin_src org :tangle content/index.org
+     
+     ,* Last Update: 2021-10-01
+       ,#+begin_export html
+       <article class="notification">
+       ,#+end_export
+     
+       Decided to finally do a renovation on this site.
+     
+       (The last update was over three years ago, so I'd say it was long
+       overdue!)
+     
+       ,#+begin_export html
+       </article>
+       ,#+end_export
+     
+     ,* Today's Specials
+     
+       ,#+begin_export html
+       <div class="columns">
+       <div class="column test is-one-third">
+       ,#+end_export
+     
+     ,** Music
+       ,#+begin_export html
+       <iframe width="100" height="20" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301008371&amp;color=ff5500&amp;inverse=false&amp;auto_play=false&amp;show_user=true">
+       </iframe>
+       </div>
+       <div class="column is-one-third">
+       ,#+end_export
+     
+     ,** Fiction
+     
+          [[http://proseandprosody.com/baud01-alone-in-detainment/][BꜶD 01]]
+     
+          It was silent, save for the fan in the corner.
+     
+          These big, metal boxes with grates on four sides were
+          everywhere, and they all worked tirelessly to do two things: take
+          in the old, stale air and revitalize it for another use, and pump
+          the result back out into the same room. They were absolutely
+          necessary, in a place with no trees or other flora to do the same
+          job, and because of this it was vital that they remain clean and
+          in working order.
+     ,#+begin_export html
+     </div>
+     <div class="column is-one-third">
+     ,#+end_export
+     
+     ,** Games
+     
+        - [[http://cdr255.com/games/falode/falodian-backgrounds/][Falodian Backgrounds]]
+     
+          ,#+begin_quote
+          The Dorscht Seeker, Ehdrin Traveler, Falodian Noble/Commoner,
+          Khula Trader, and Viliniti Diasporan backgrounds, for use in True20.
+          ,#+end_quote
+     
+      ,#+begin_export html
+      </div>
+      </div>
+      ,#+end_export
+   #+end_src
+
+   #+begin_src org
+     ,* cdr255
+       <body>
+           <div id="content">
+             <p><img id="floatleft" src="/assets/img/cdr255-logo.png" alt="My Picture" /></p>
+             <h3 id="last-update-2018-09-09">Last Update: 2018-09-09</h3>
+             <p>Welcome to my little corner of the web. My name is Christopher
+               Rodriguez. I make music, fiction, games, and software, and
+               reference/store them all here.</p>
+             <p>If You like something You see, want to work with me, or in general just
+               want to say hi: Feel free to <a href="mailto:&#099;&#100;&#114;&#050;&#053;&#053;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;" title=" ">email me</a>.
+               Alternatively, I am fairly active on <a href="links.html">social media</a> as
+               well.</p>
+             <hr />
+             <h3 id="most-recent-tracks">Most Recent Tracks</h3>
+             <!-- MIDI Composition -->
+             <iframe width="100" height="20" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301008371&amp;color=ff5500&amp;inverse=false&amp;auto_play=false&amp;show_user=true">
+             </iframe>
+             <!-- One-Take Recording -->
+             <iframe width="100" height="20" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/222278673&amp;color=ff5500&amp;inverse=false&amp;auto_play=false&amp;show_user=true">
+             </iframe>
+             <!-- Chiptune Recording -->
+             <iframe width="100" height="20" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/208498416&amp;color=ff5500&amp;inverse=false&amp;auto_play=false&amp;show_user=true">
+             </iframe>
+             <hr />
+             <h3 id="meta">Meta</h3>
+             <p>Check out the <a href="/changelog/">ChangeLog</a> and the <a href="sitemap.xml">Sitemap</a> if You want.</p>
+           </div>
+           <div id="subcontent">
+             <a href="https://twitter.com/cdr255" data-widget-id="346527819267973120" data-tweet-limit="1" data-chrome="nofooter transparent noscrollbar noborders noheader" data-aria-polite="assertive" data-link-color="#aa2222" class="twitter-timeline">Tweets by @cdr255
+             </a>
+             <script>
+               !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+"://platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+             </script>
+           </div>
+         </main>
+         <footer>
+           <p>The homepage of Christopher Rodriguez, an obsessive storyteller with a -5 in Dexterity, a lever harp running LSDJ, and a ten year old laptop running OpenSUSE.</p>
+           <p>Created Using: Emacs 25.3, Fedora 28, Jekyll 3.7.2, Liquid 4.0.0, Sass 3.5.5, and Kramdown 1.16.2</p>
+           <p>Copyright © 2018 Christopher Rodriguez &lt;<a class="u-email" href="mailto:&#099;&#100;&#114;&#050;&#053;&#053;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;">&#099;&#100;&#114;&#050;&#053;&#053;&#064;&#103;&#109;&#097;&#105;&#108;&#046;&#099;&#111;&#109;</a>&gt;</p>
+           <p><a href="https://www.w3.org/html/logo/"><img src="/assets/img/html5.png" alt="Use HTML5" /></a> <a href="https://creativecommons.org/licenses/by-sa/4.0/"><img src="/assets/img/cc-by-sa.png" alt="CC-BY-SA 4.0 International" /></a> <a href="https://jigsaw.w3.org/css-validator/validator?uri=cdr255.com&profile=css3svg&usermedium=all&warning=1&vextwarning=&lang=en"><img src="/assets/img/css3.png" alt="Valid CSS3" /></a> </p>
+         </footer>
+       </body>
+     </html>
+     
+   #+end_src
