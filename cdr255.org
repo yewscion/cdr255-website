@@ -75,20 +75,19 @@
      ;; Customize our Variables
      (setq org-html-head-include-scripts nil ;; We're gonna use our own JS
            org-html-head-include-default-style nil  ;; We're gonna use our own CSS
-           org-html-style "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css\">"
+           org-html-style "<link rel=\"stylesheet\" href=\"/style/main.css\">"
            org-html-head-extra "<meta charset=\"utf-8\">
-     <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
-     <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">
-     <meta property=\"og:title\" content=\"cdr255\" />
-     <meta name=\"author\" content=\"Christopher Rodriguez\" />
-     <meta property=\"og:locale\" content=\"en_US\" />
-     <link rel=\"canonical\" href=\"http://cdr255.com/\" />"
+                              <meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">
+                              <meta property=\"og:title\" content=\"cdr255\" />
+                              <meta name=\"author\" content=\"Christopher Rodriguez\" />
+                              <meta property=\"og:locale\" content=\"en_US\" />
+                              <link rel=\"canonical\" href=\"https://cdr255.com/\" />"
            org-html-doctype "html5")
      
      ;; Define our Publish Targets
      (setq org-publish-project-alist
            (list
-            (list "my-org-site"
+            (list "cdr255-content"
                   :recursive t
                   :base-directory "./content"
                   :publishing-directory "./public"
@@ -100,13 +99,25 @@
                   :time-stamp-file nil
                   :auto-sitemap t
                   :makeindex t
-                  :html-preamble "<header><nav class=\"navbar\" role=\"navigation\" aria-label=\"main navigation\"><div class=\"navbar-brand\"><a href=\"https://cdr255.com\" class=\"navbar-item\"><h1>cdr255</h1></a><a role=\"button\" class=\"navbar-burger\" aria-label=\"menu\" aria-expanded=\"false\"><span aria-hidden=\"true\"></span><span aria-hidden=\"true\"></span><span aria-hidden=\"true\"></span></a></div><div class=\"navbar-menu\"><div class=\"navbar-start\"><a class=\"navbar-item\" href=\"/\">Home</a><a class=\"navbar-item\" href=\"/about/\">About</a><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Music</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/lessons/\">Lessons</a><a class=\"navbar-item\" href=\"/compositions/\">Compositions</a><a class=\"navbar-item\" href=\"/recordings/\">Recordings</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Games</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/games/\">My Games</a><a class=\"navbar-item\" href=\"/logs/\">TTRPG Logs</a><a class=\"navbar-item\" href=\"/reviews/\">Reviews</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Fiction</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/novels\"/>Novel Drafts</a><a class=\"navbar-item\" href=\"/serials/\">Serial Fiction</a><a class=\"navbar-item\" href=\"/tintenn/\">Tintenn Archive</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Computers</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/software/\">Software</a><a class=\"navbar-item\" href=\"/support/\">Tech Support</a><a href=\"/linux/\">GNU/Linux</a><a class=\"navbar-item\" href=\"/howtos/\">How-Tos</a></div></div><div class=\"navbar-item has-dropdown is-hoverable\"><a class=\"navbar-link\">Misc</a><div class=\"navbar-dropdown\"><a class=\"navbar-item\" href=\"/links/\">Links</a><a class=\"navbar-item\" href=\"/conlangs/\">Conlangs</a><a class=\"navbar-item\" href=\"/collections/\">Collections</a><a class=\"navbar-item\" href=\"/stuff/\">Other Stuff</a></div></div></div><div class=\"navbar-end\"><div class=\"navbar-item\"><div class=\"buttons\"><a class=\"button is-primary\" href=\"https://yewscion.com\">Blog</a><a class=\"button is-link\" href=\"https://tumblingowl.com\">Games</a></div></div></div></div></nav></header>")))
+                  :html-preamble "<header><a href=\"https://cdr255.com/\"><h1>cdr255</h1></a><nav><ul><li><a href=\"/\">Home</a></li><li><a href=\"/about/\">About</a></li><li><a>Music</a><div><ul><li><a href=\"/lessons/\">Lessons</a></li><li><a href=\"/compositions/\">Compositions</a></li><li><a href=\"/recordings/\">Recordings</a></li></ul></div></li><li><a>Games</a><div><ul><li><a href=\"/games/\">My Games</a></li><li><a href=\"/logs/\">TTRPG Logs</a></li><li><a href=\"/reviews/\">Reviews</a></li></ul></div></li><li><a>Fiction</a><div><ul><li><a href=\"/novels/\">Novel Drafts</a></li><li><a href=\"/serials/\">Serial Fiction</a></li><li><a href=\"/tintenn/\">Tintenn Archive</a></li></ul></div></li><li><a>Computers</a><div><ul><li><a href=\"/software/\">Software</a></li><li><a href=\"/support/\">Tech Support</a></li><li><a href=\"/linux/\">GNU/Linux</a></li><li><a href=\"/howtos/\">How-Tos</a></li></ul></div></li><li><a>Misc</a><div><ul><li><a href=\"/links/\">Links</a></li><li><a href=\"/conlangs/\">Conlangs</a></li><li><a href=\"/collections/\">Collections</a></li><li><a href=\"/stuff/\">Other Stuff</a></li></ul></div></li><li><a href=\"https://yewscion.com/\">Blog</a></li></ul></nav></header><main>"
+                  :html-postamble "</main><footer><p class=\"author\">Author: %a (%e)</p>
+     <p class=\"date\">Date: %d</p>
+     <p class=\"creator\">%c</p>
+     <p class=\"validation\">%v</p>
+     <p class=\"attributions\">Background from <a href=\"https://www.svgbackgrounds.com/\">SVGBackgrounds</a>. Org Publish method from <a href=\"https://systemcrafters.cc/\">System Crafters</a>. Fonts from <a href=\"https://fonts.google.com/\">Google Fonts</a>.</p>
+     <p class=\"badges\"><a rel=\"license\" href=\"http://creativecommons.org/licenses/by-sa/4.0/\"><img alt=\"Creative Commons BY-SA License 4.0\" style=\"border-width:0\" src=\"https://i.creativecommons.org/l/by-sa/4.0/88x31.png\" /></a><a rel=\"license\" href=\"https://www.gnu.org/licenses/lgpl-3.0.en.html\"><img alt=\"GNU Lesser General Public License 3.0+\" style=\"border-width:0\" src=\"/assets/lgplv3.png\" /></a></p></footer>")
+            (list "cdr255-assets"
+                  :recursive t
+                  :base-directory "./content"
+                  :publishing-directory "./public"
+                  :publishing-function 'org-publish-attachment
+                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|flac\\|ogg\\|txz")))
      
-     ;; Publish Everything!
-     (org-publish-all t)
+           ;; Publish Everything!
+           (org-publish-all t)
      
-     ;; Tell the User
-     (message "Build Complete!")
+           ;; Tell the User
+           (message "Build Complete!")
      
    #+end_src
 ** Bash Wrapper Script
@@ -127,6 +138,9 @@
        (The last update was over three years ago, so I'd say it was long
        overdue!)
      
+       I'm mostly keeping the content the same for now, as I want to focus
+       on converting the old site to the new format first.
+     
        ,#+begin_export html
        </article>
        ,#+end_export
@@ -135,13 +149,12 @@
      
        ,#+begin_export html
        <div class="columns">
-       <div class="column test is-one-third">
        ,#+end_export
      
      ,** Music
        ,#+begin_export html
-       <iframe width="100" height="20" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301008371&amp;color=ff5500&amp;inverse=false&amp;auto_play=false&amp;show_user=true">
-       </iframe>
+       <div class="column is-one-third">
+       <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301008371&color=%2364b6d7&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/cdr255" title="cdr255" target="_blank" style="color: #cccccc; text-decoration: none;">cdr255</a> · <a href="https://soundcloud.com/cdr255/thirteen-point-three" title="Thirteen Point Three" target="_blank" style="color: #cccccc; text-decoration: none;">Thirteen Point Three</a></div>
        </div>
        <div class="column is-one-third">
        ,#+end_export
@@ -225,3 +238,260 @@
      </html>
      
    #+end_src
+* Style
+  #+begin_src css :tangle content/style/main.css
+    @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Press+Start+2P&display=swap');
+    
+    html {
+        background-color: #FFFBF7;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3Crect stroke='%23FFFBF7' stroke-width='0.2' width='1' height='1' id='s'/%3E%3Cpattern id='a' width='3' height='3' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cuse fill='%23fcf8f5' href='%23s' y='2'/%3E%3Cuse fill='%23fcf8f5' href='%23s' x='1' y='2'/%3E%3Cuse fill='%23faf6f2' href='%23s' x='2' y='2'/%3E%3Cuse fill='%23faf6f2' href='%23s'/%3E%3Cuse fill='%23f7f3ef' href='%23s' x='2'/%3E%3Cuse fill='%23f7f3ef' href='%23s' x='1' y='1'/%3E%3C/pattern%3E%3Cpattern id='b' width='7' height='11' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23f5f1ed'%3E%3Cuse href='%23s'/%3E%3Cuse href='%23s' y='5' /%3E%3Cuse href='%23s' x='1' y='10'/%3E%3Cuse href='%23s' x='2' y='1'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='8'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='5' y='2'/%3E%3Cuse href='%23s' x='5' y='6'/%3E%3Cuse href='%23s' x='6' y='9'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='h' width='5' height='13' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23f5f1ed'%3E%3Cuse href='%23s' y='5'/%3E%3Cuse href='%23s' y='8'/%3E%3Cuse href='%23s' x='1' y='1'/%3E%3Cuse href='%23s' x='1' y='9'/%3E%3Cuse href='%23s' x='1' y='12'/%3E%3Cuse href='%23s' x='2'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='2'/%3E%3Cuse href='%23s' x='3' y='6'/%3E%3Cuse href='%23s' x='3' y='11'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='4' y='10'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='c' width='17' height='13' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23f2eeea'%3E%3Cuse href='%23s' y='11'/%3E%3Cuse href='%23s' x='2' y='9'/%3E%3Cuse href='%23s' x='5' y='12'/%3E%3Cuse href='%23s' x='9' y='4'/%3E%3Cuse href='%23s' x='12' y='1'/%3E%3Cuse href='%23s' x='16' y='6'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='d' width='19' height='17' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23FFFBF7'%3E%3Cuse href='%23s' y='9'/%3E%3Cuse href='%23s' x='16' y='5'/%3E%3Cuse href='%23s' x='14' y='2'/%3E%3Cuse href='%23s' x='11' y='11'/%3E%3Cuse href='%23s' x='6' y='14'/%3E%3C/g%3E%3Cg fill='%23efebe8'%3E%3Cuse href='%23s' x='3' y='13'/%3E%3Cuse href='%23s' x='9' y='7'/%3E%3Cuse href='%23s' x='13' y='10'/%3E%3Cuse href='%23s' x='15' y='4'/%3E%3Cuse href='%23s' x='18' y='1'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='e' width='47' height='53' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23883600'%3E%3Cuse href='%23s' x='2' y='5'/%3E%3Cuse href='%23s' x='16' y='38'/%3E%3Cuse href='%23s' x='46' y='42'/%3E%3Cuse href='%23s' x='29' y='20'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='f' width='59' height='71' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23883600'%3E%3Cuse href='%23s' x='33' y='13'/%3E%3Cuse href='%23s' x='27' y='54'/%3E%3Cuse href='%23s' x='55' y='55'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='g' width='139' height='97' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23883600'%3E%3Cuse href='%23s' x='11' y='8'/%3E%3Cuse href='%23s' x='51' y='13'/%3E%3Cuse href='%23s' x='17' y='73'/%3E%3Cuse href='%23s' x='99' y='57'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23a)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23b)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23h)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23c)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23d)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23e)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23f)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23g)' width='100%25' height='100%25'/%3E%3C/svg%3E");
+        background-attachment: fixed;
+        background-size: cover;
+    }
+    
+    body {
+        max-width: 70%;
+        margin: auto;
+        background-color: #FFFBF7;
+        padding: 1.5em;
+        font-family: 'Montserrat', sans-serif;
+        font-size: small;
+    }
+    
+    a:link {
+        text-decoration: none;
+        color: #883600;
+    }
+    
+    a:visited {
+        text-decoration: none;
+    }
+    
+    a:hover {
+        text-decoration: underline;
+    }
+    
+    a:active {
+        text-decoration: none;
+    }
+    
+    ::selection {
+        background: #883600;
+        color: #FFFBF7;
+    }
+    
+    header {
+        display: flex;
+        align-items: baseline;
+        margin: auto;
+    }
+    
+    header > a > h1 {
+        font-family: 'Press Start 2P', cursive;
+        font-size: x-large;
+        text-align: left;
+        padding-left: 1em;
+        font-size: 2em;
+        color: #683600;
+        margin-right: 2em;
+        background-color: #FFFBF7;
+    }
+    
+    header > a:link {
+        color: black;
+    }
+    header > a:visited {
+        color: black;
+    }
+    header > a:hover {
+        color: #883600;
+        text-decoration: none;
+    }
+    header > a:active {
+        color: #883600;
+        background-color: #EEEAE6;
+    }
+    
+    header > nav {
+        background-color: #FFFBF7;
+        margin-right: auto;
+    }
+    
+    /* BREAK */
+    
+    nav ul {
+        margin: 0;
+        padding: 0; }
+    nav ul li {
+        display: inline-block;
+        list-style-type: none;
+        transition: all 0.2s; }
+    nav > ul > li > a {
+        color: #E2E2E2;
+        display: block;
+        line-height: 3em;
+        padding: 0 24px;
+        text-decoration: none; }
+    nav > ul > li > a > .caret {
+        border-top: 4px solid #E2E2E2;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+        content: "";
+        display: inline-block;
+        height: 0;
+        width: 0;
+        vertical-align: middle;
+        transition: color 0.1s linear; }
+    nav > ul > li:hover {
+        background-color: #280000; }
+    nav > ul > li:hover > a {
+        color: #E2E2E2; }
+    nav > ul > li:hover > a > .caret {
+        border-top-color: #E2E2E2; }
+    nav > ul > li:hover > div {
+        display: block;
+        opacity: 1;
+        visibility: visible; }
+    nav > ul > li > div {
+        background-color: #280000;
+        border-top: 0;
+        border-radius: 0 0 4px 4px;
+        box-shadow: 0 2px 2px -1px rgba(0, 0, 0, 0.055);
+        display: none;
+        margin: 0;
+        opacity: 0;
+        position: absolute;
+        width: 165px;
+        visibility: hidden;
+        z-index: 100;
+        -o-transition: opacity 0.2s;
+        transition: opacity 0.2s; }
+    nav > ul > li > div ul > li {
+        display: block; }
+    nav > ul > li > div ul > li > a {
+        color: #E2E2E2;
+        display: block;
+        padding: 12px 24px;
+        text-decoration: none; }
+    nav > ul > li > div ul > li:hover > a {
+        background-color: rgba(255, 255, 255, 0.1); }
+    #content {
+        background-color: #FBF7F3;
+        padding: 2em;
+        padding-top: 0;
+        margin: auto;
+        width: 80%;
+        min-height: 25em;
+        overflow: hidden;
+    #content h2 {
+        display: block;
+        margin: 0 0 16px 0;
+        font-size: 1.7em;
+        font-weight: normal;
+        letter-spacing: -1px;
+        color: #505050;
+        background-color: inherit; }
+    #content h2 a {
+        font-weight: normal; }
+    #content h3 {
+        margin: 0 0 5px 0;
+        font-size: 1.4em;
+        letter-spacing: -1px; }
+    #content h4 {
+        background-color: #333;
+        color: #CCC; }
+    #content img {
+        max-width: 200px;
+        border: 1px solid #a22; }
+    #content ul {
+        margin: 1em; }
+    #content ol {
+        margin: 1em; }
+    #content dl {
+        margin: 1em; }
+    #content dt {
+        font-weight: bold;
+        margin-bottom: 1em; }
+    #content dd {
+        margin: 1em; }
+    #content table {
+        display: table;
+        max-width: 90%;
+        margin-left: 0; }
+    #content table td {
+        display: table-cell; }
+    #content table th {
+        display: table-cell; }
+    #content blockquote {
+        font-family: "Montserrat", monospace;
+        font-size: small;
+        padding: 8px;
+        text-align: center;
+        background-color: rgba(225, 178, 178, 0.2);
+        border: 0px inset;
+        display: block;
+        max-width: 80%;
+        margin: auto;
+        margin-top: 1em;
+        margin-bottom: 1em;
+        line-height: 2em; }
+    #subcontent {
+        float: right;
+        width: 11em;
+        padding: 20px 20px 10px 0;
+        line-height: 1.4em; }
+    #subcontent a:hover {
+        text-decoration: underline; }
+    #subcontent h2 {
+        display: block;
+        margin: 0 0 15px 0;
+        font-size: 1.6em;
+        font-weight: normal;
+        text-align: left;
+        letter-spacing: -1px;
+        color: #505050;
+        background-color: inherit; }
+    #subcontent p {
+        margin: 0 0 1em 0;
+        font-size: 0.9em; }
+    #floatleft {
+        float: left;
+        margin-right: 1em; }
+    footer p {
+        text-align: center;
+        font-size: x-small; }
+    .strikethrough {
+        text-decoration: line-through; }
+    .nb {
+        font-style: italic;
+        font-size: x-small; }
+    .irc-date {
+        color: #CCBBBB;
+        font-style: italic;
+        font-size: xx-small; }
+    .irc-chrissofer, .irc-cdr255, .irc-wrena, .irc-orom, .irc-greenhairedboy, .irc-ladygrevolk {
+        color: #6B3F00; }
+    .irc-todo, .irc-kass {
+        color: #00D742; }
+    .irc-bronnie, .irc-bron, .irc-ed627, .irc-bronnis, .irc-bronward, .irc-ferath {
+        color: #00D3D7; }
+    .irc-ember {
+        color: #FF9000; }
+    .irc-gwynn, .irc-gwynnn, .irc-strangers, .irc-hooded, .irc-hood, .irc-x {
+        color: #FF00DB; }
+    .irc-danni, .irc-twoorcfouryou, .irc-thegreatorchope, .irc-renrik, .irc-lyco {
+        color: #0D00FF; }
+    .irc-dayra, .irc-dare, .irc-daredibryn {
+        color: #AEFF00; }
+    .irc-gameserv, .irc-chanserv {
+        color: #BBCCBB; }
+    .irc-roll {
+        color: #CCBBBB;
+        font-size: small; }
+    .irc-arrow {
+        font-size: large;
+        color: #CCBBBB; }
+    iframe {
+        width: 100%;r
+        border: none; }
+  #+end_src
