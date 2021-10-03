@@ -110,7 +110,7 @@
                   :base-directory "./content"
                   :publishing-directory "./public"
                   :publishing-function 'org-publish-attachment
-                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|flac\\|ogg\\|txz")))
+                  :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|flac\\|ogg\\|txz\\|mp3")))
      
      ;; Publish Everything!
      (org-publish-all t)
@@ -140,20 +140,40 @@
        I'm mostly keeping the content the same for now, as I want to focus
        on converting the old site to the new format first.
      
-       -----
-     
-     ,* Today's Specials
+     ,* Highlights
        :PROPERTIES:
-       :HTML_CONTAINER_CLASS: grid
+       :HTML_CONTAINER_CLASS: grid-alpha-container
        :END:
+       Here are today's specials…
      ,** Music
-       ,#+begin_export html
-       <iframe width="100%" height="166" scrolling="no" frameborder="no" allow="autoplay" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/301008371&color=%2364b6d7&auto_play=false&hide_related=false&show_comments=true&show_user=true&show_reposts=false&show_teaser=true"></iframe><div style="font-size: 10px; color: #cccccc;line-break: anywhere;word-break: normal;overflow: hidden;white-space: nowrap;text-overflow: ellipsis; font-family: Interstate,Lucida Grande,Lucida Sans Unicode,Lucida Sans,Garuda,Verdana,Tahoma,sans-serif;font-weight: 100;"><a href="https://soundcloud.com/cdr255" title="cdr255" target="_blank" style="color: #cccccc; text-decoration: none;">cdr255</a> · <a href="https://soundcloud.com/cdr255/thirteen-point-three" title="Thirteen Point Three" target="_blank" style="color: #cccccc; text-decoration: none;">Thirteen Point Three</a>
-       ,#+end_export
+        :PROPERTIES:
+        :HTML_CONTAINER_CLASS: grid-alpha-r2c1
+        :END:
+     ,*** Thirteen Point Three
      
+         This is was my first (and only) entry into the 2017 =/r/songaweek=
+         challenge!
+     
+         The theme was "Off by One", which I took a few different
+         ways. First, I chose to write this piece in 5/4. Second, I chose
+         to make this a three section piece (instead of my usual
+         two). Finally, I tried to tell the (yet to be written out) story
+         of Vir, a demigod in the fantasy story I'm currently working on
+         whose trials and tribulations ultimately meant their own
+         demise... But not before their duty was done, which resulted in
+         their demigodhood.
+         ,#+attr_html: :controls controls
+         ,#+begin_audio
+         ,#+html: <source src="assets/01-thirteen-point-three-midi.mp3" type="audio/mp3">
+         Your browser does not support the audio tag. Check the track out
+         on [[https://soundcloud.com/cdr255/thirteen-point-three][Soundcloud]]!
+         ,#+end_audio
      ,** Fiction
-          [[http://proseandprosody.com/baud01-alone-in-detainment/][BꜶD 01]]
-     
+        :PROPERTIES:
+        :HTML_CONTAINER_CLASS: grid-alpha-r2c2
+        :END:
+     ,*** BꜶD 01 - Alone in Containment
+          ,#+begin_quote
           It was silent, save for the fan in the corner.
      
           These big, metal boxes with grates on four sides were
@@ -163,21 +183,84 @@
           necessary, in a place with no trees or other flora to do the same
           job, and because of this it was vital that they remain clean and
           in working order.
-     
-     ,** Games
-        - [[http://cdr255.com/games/falode/falodian-backgrounds/][Falodian Backgrounds]]
-     
-          ,#+begin_quote
-          The Dorscht Seeker, Ehdrin Traveler, Falodian Noble/Commoner,
-          Khula Trader, and Viliniti Diasporan backgrounds, for use in True20.
           ,#+end_quote
      
-        ,#+begin_export html
-        </div>
-        ,#+end_export
-        ,#+end_flexbox
+          [[http://proseandprosody.com/baud01-alone-in-detainment/][Read on Prose and Prosody]]
+     ,** Games
+        :PROPERTIES:
+        :HTML_CONTAINER_CLASS: grid-alpha-r2c3
+        :END:
+     ,*** Falodian Backgrounds
+         The Dorscht Seeker, Ehdrin Traveler, Falodian Noble/Commoner,
+         Khula Trader, and Viliniti Diasporan backgrounds, for use in
+         [[https://en.wikipedia.org/wiki/True20][True20]]. From one of my more fleshed out fictional worlds.
      
-        ,#+HTML: </div>
+         [[http://cdr255.com/games/falode/falodian-backgrounds/][Read on this Website]]
+   #+end_src
+** About
+   #+begin_src org :tangle content/about/index.org
+     
+     ,* About Me
+     
+       My name is Christopher Rodriguez.
+     ,** Technology
+        I'm a huge proponent of Free Software and Free Culture. My OS of
+        choice is [[https://guix.gnu.org/][GNU Guix]]. Most of my work is released under either the
+        [[https://www.gnu.org/licenses/lgpl-3.0.en.html][LGPL v3.0+]] or [[https://creativecommons.org/licenses/by-sa/4.0/][CC-BY-SA 4.0]].
+     
+        I consider myself more of a software nerd than a hardware nerd. I
+        am an unrepentent [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisper]]; The first language I reach for is [[https://common-lisp.net/][Common
+        Lisp]], but I use ([[https://www.gnu.org/software/guile/][GNU Guile]]) [[https://groups.csail.mit.edu/mac/projects/scheme/][Scheme]], [[https://www.gnu.org/software/emacs/manual/html_node/eintr/][Emacs Lisp]], and [[https://clojure.org/][Clojure]] when
+        the situation calls for them. I especially like [[https://en.wikipedia.org/wiki/Text_processing][Text Processing]] and
+        [[https://en.wikipedia.org/wiki/Data_manipulation_language][Data Manipulation]]. For databases I prefer [[https://www.postgresql.org/][PostgreSQL]].
+     
+        I maintain a couple of websites other than this one. Here are the
+        main ones:
+     
+        - [[https://yewscion.com/][Yewscion]] - My Tech Blog.
+        - [[http://proseandprosody.com][Prose and Prosody]] - My Fiction Site.
+        - [[http://tumblingowl.com][Tumbling Owl]] - My Game Site.
+        - [[http://toftandtoddy.com][Todt and Toddy]] - My Music Site.
+     
+     
+        As for this site, it is meant to be a hub of sorts for everything I
+        publish, along with a repository of any content that doesn't fit on
+        other sites (my homepage).
+     ,** Games
+        I am, and always have been, an avid gamer.
+     
+        I've recently moved more towards tabletop gaming, especially
+        boardgames. I am active on [[https://boardgamegeek.com/user/yewscion][BoardGameGeek]]. I've published relatively
+        little of my own gaming content, though I still have some stuff in
+        the works.
+     
+        As for video gaming, I prefer DRM-free releases and FLOSS projects
+        when possible. I also prefer strategy / simulation games to the
+        more twitchy ones, and much prefer a keyboard to a controller.
+     ,** Music
+        I am a Harper, a Composer, and an Irish Traditional Musician.
+     
+        I love instrumental music the best, and have a large personal
+        collection of MIDI and MOD files. Music I listen to in a wave
+        format is usually stored in FLAC files. That said, I like all
+        music, from Rap to Rock to Country to Metal.
+     
+        My own music is usually published in MIDI form at first, usually
+        using [[https://lilypond.org][GNU Lilypond]]. Then I will teach myself to play it on one
+        instrument or another and make a recording of it after I'm happy
+        with the MIDI composition. Unless otherwise stated, all of my work
+        is published under [[https://creativecommons.org/licenses/by-sa/4.0/][CC-BY-SA 4.0]].
+     ,** Writing
+        I enjoy reading and writing, but more as a hobby that anything
+        else.
+     
+        I have many ongoing series on my Fiction Site, on which I publish
+        little serial releases irregularly. The stories within I hope to
+        use as the backdrop for my music or games eventualy, though its my
+        hope that they will stand on their own as well.
+     
+        One day I may publish some of my work in a hard copy. If I do, it
+        will be referenced here.
    #+end_src
 * Style
   #+begin_src css :tangle content/style/main.css
@@ -364,7 +447,7 @@
         font-style: italic;
         padding: 8px;
         text-align: center;
-        background-color: rgba(100, 50, 0, 0.1);
+        background-color: rgba(100, 50, 0, 0.01);
         border: 1px solid #683600;
         display: block;
         max-width: 80%;
@@ -392,24 +475,41 @@
         font-style: italic;
         font-size: x-small;
     }
-    .grid {
+    .grid-alpha-container {
         display: grid;
-        grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 7fr;
     }
     
-    .grid > .outline-text-2 {
+    .grid-alpha-container > .outline-text-2 {
         display: none;
     }
     
-    .grid > h2 {
-        grid-column: span 5;
-        grid-row: 1;
+    .grid-alpha-r2c1 {
+        padding-left: 1em;
+        padding-right: 1em;
+        grid-column: 1;
+        grid-row: 2;
+        }
+    .grid-alpha-r2c2 {
+        border-left: 1px solid rgba(100,50,0,0.1);
+        border-right: 1px solid rgba(100,50,0,0.1);
+        padding-left: 1em;
+        padding-right: 1em;
+        grid-column: 2;
+        grid-row: 2;
+        }
+    .grid-alpha-r2c3 {
+        padding-left: 1em;
+        padding-right: 1em;
+        grid-column: 3;
+        grid-row: 2;
+        }
+    /* DOES NOTHING */
+    .grid-alpha-r2c1 > h4 {
+        background-color: #683600;
     }
     
-    .grid > h3 {
-        grid-column: auto;
-    }
     /* IRC Log Formatting */
     .irc-date {
         color: #CCBBBB;
