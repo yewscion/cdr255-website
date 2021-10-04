@@ -65,13 +65,13 @@
      (package-initialize)
      (unless package-archive-contents
        (package-refresh-contents))
-     
+
      ;; Install Dependencies
      (package-install 'htmlize)
-     
+
      ;; Load the Publishing System
      (require 'ox-publish)
-     
+
      ;; Customize our Variables
      (setq org-html-head-include-scripts nil ;; We're gonna use our own JS
            org-html-head-include-default-style nil  ;; We're gonna use our own CSS
@@ -84,7 +84,7 @@
                                              <link rel=\"canonical\" href=\"https://cdr255.com/\" />"
            org-html-doctype "html5"
            org-export-with-sub-superscripts '{})
-     
+
      ;; Define our Publish Targets
      (setq org-publish-project-alist
            (list
@@ -100,7 +100,7 @@
                   :time-stamp-file nil
                   :auto-sitemap t
                   :makeindex t
-                  :html-preamble "<header><a href=\"https://cdr255.com/\"><h1>cdr255</h1></a><nav><ul><li><a href=\"/\">Home</a></li><li><a href=\"/about/\">About</a></li><li><a>Music</a><div><ul><li><a href=\"/lessons/\">Lessons</a></li><li><a href=\"/compositions/\">Compositions</a></li><li><a href=\"/recordings/\">Recordings</a></li></ul></div></li><li><a>Games</a><div><ul><li><a href=\"/games/\">My Games</a></li><li><a href=\"/logs/\">TTRPG Logs</a></li><li><a href=\"/reviews/\">Reviews</a></li></ul></div></li><li><a>Fiction</a><div><ul><li><a href=\"/novels/\">Novel Drafts</a></li><li><a href=\"/serials/\">Serial Fiction</a></li><li><a href=\"/tintenn/\">Tintenn Archive</a></li></ul></div></li><li><a>Computers</a><div><ul><li><a href=\"/software/\">Software</a></li><li><a href=\"/support/\">Tech Support</a></li><li><a href=\"/linux/\">GNU/Linux</a></li><li><a href=\"/howtos/\">How-Tos</a></li></ul></div></li><li><a>Misc</a><div><ul><li><a href=\"/links/\">Links</a></li><li><a href=\"/conlangs/\">Conlangs</a></li><li><a href=\"/collections/\">Collections</a></li><li><a href=\"/stuff/\">Other Stuff</a></li></ul></div></li><li><a href=\"https://yewscion.com/\">Blog</a></li></ul></nav></header>"
+                  :html-preamble "<header><a href=\"https://cdr255.com/\"><h1>cdr255</h1></a><nav><ul><li><a href=\"/\">Home</a></li><li><a href=\"/about/\">About</a></li><li><a>Music</a><div><ul><li><a href=\"/compositions/\">Compositions</a></li><li><a href=\"/recordings/\">Recordings</a></li><li><a href=\"/transcriptions/\">Transcriptions</a></li></ul></div></li><li><a>Games</a><div><ul><li><a href=\"/games/\">My Games</a></li><li><a href=\"/logs/\">TTRPG Logs</a></li><li><a href=\"/reviews/\">Reviews</a></li></ul></div></li><li><a>Fiction</a><div><ul><li><a href=\"/novels/\">Novel Drafts</a></li><li><a href=\"/serials/\">Serial Fiction</a></li><li><a href=\"/tintenn/\">Tintenn Archive</a></li></ul></div></li><li><a>Computers</a><div><ul><li><a href=\"/software/\">Software</a></li><li><a href=\"/support/\">Tech Support</a></li><li><a href=\"/linux/\">GNU/Linux</a></li><li><a href=\"/howtos/\">How-Tos</a></li></ul></div></li><li><a>Misc</a><div><ul><li><a href=\"/links/\">Links</a></li><li><a href=\"/conlangs/\">Conlangs</a></li><li><a href=\"/collections/\">Collections</a></li><li><a href=\"/stuff/\">Other Stuff</a></li></ul></div></li><li><a href=\"https://yewscion.com/\">Blog</a></li></ul></nav></header>"
                   :html-postamble "</main><footer><p class=\"author\">Original Content &copy;2021 Christopher Rodriguez, made using %c. %v!</p>
                <p class=\"attributions\">Background from <a href=\"https://www.svgbackgrounds.com/\">SVGBackgrounds</a>. Org Publish method from <a href=\"https://systemcrafters.cc/\">System Crafters</a>. Fonts from <a href=\"https://fonts.google.com/\">Google Fonts</a>.</p>
                <p class=\"badges\"><a rel=\"license\" href=\"http://creativecommons.org/licenses/by-sa/4.0/\"><img alt=\"Creative Commons BY-SA License 4.0\" style=\"border-width:0;\" src=\"https://i.creativecommons.org/l/by-sa/4.0/88x31.png\" /></a>&nbsp;&nbsp;&nbsp;&nbsp;<a rel=\"license\" href=\"https://www.gnu.org/licenses/lgpl-3.0.en.html\"><img alt=\"GNU Lesser General Public License 3.0+\" style=\"border-width:0\" src=\"/assets/lgplv3.png\" /></a></p></footer>"
@@ -111,13 +111,13 @@
                   :publishing-directory "./public"
                   :publishing-function 'org-publish-attachment
                   :base-extension "css\\|js\\|png\\|jpg\\|gif\\|pdf\\|flac\\|ogg\\|txz\\|mp3")))
-     
+
      ;; Publish Everything!
      (org-publish-all t)
-     
+
      ;; Tell the User
      (message "Build Complete!")
-     
+
    #+end_src
 ** Bash Wrapper Script
    #+begin_src bash :shebang #!/usr/bin/env bash :tangle build.sh
@@ -126,20 +126,20 @@
 * Pages
 ** Index
    #+begin_src org :tangle content/index.org
-     
+
      ,* Last Update
-     
+
        ,#+ATTR_HTML: :class nb
        2021-10-01
-     
+
        Decided to finally do a renovation on this site.
-     
+
        (The last update was over three years ago, so I'd say it was long
        overdue!)
-     
+
        I'm mostly keeping the content the same for now, as I want to focus
        on converting the old site to the new format first.
-     
+
      ,* Highlights
        :PROPERTIES:
        :HTML_CONTAINER_CLASS: grid-alpha-container
@@ -150,10 +150,10 @@
         :HTML_CONTAINER_CLASS: grid-alpha-r2c1
         :END:
      ,*** Thirteen Point Three
-     
+
          This is was my first (and only) entry into the 2017 =/r/songaweek=
          challenge!
-     
+
          The theme was "Off by One", which I took a few different
          ways. First, I chose to write this piece in 5/4. Second, I chose
          to make this a three section piece (instead of my usual
@@ -175,7 +175,7 @@
      ,*** BꜶD 01 - Alone in Containment
           ,#+begin_quote
           It was silent, save for the fan in the corner.
-     
+
           These big, metal boxes with grates on four sides were
           everywhere, and they all worked tirelessly to do two things: take
           in the old, stale air and revitalize it for another use, and pump
@@ -184,7 +184,7 @@
           job, and because of this it was vital that they remain clean and
           in working order.
           ,#+end_quote
-     
+
           [[http://proseandprosody.com/baud01-alone-in-detainment/][Read on Prose and Prosody]]
      ,** Games
         :PROPERTIES:
@@ -194,57 +194,57 @@
          The Dorscht Seeker, Ehdrin Traveler, Falodian Noble/Commoner,
          Khula Trader, and Viliniti Diasporan backgrounds, for use in
          [[https://en.wikipedia.org/wiki/True20][True20]]. From one of my more fleshed out fictional worlds.
-     
+
          [[http://cdr255.com/games/falode/falodian-backgrounds/][Read on this Website]]
    #+end_src
 ** About
    #+begin_src org :tangle content/about/index.org
-     
+
      ,* About Me
-     
+
        My name is Christopher Rodriguez.
      ,** Technology
         I'm a huge proponent of Free Software and Free Culture. My OS of
         choice is [[https://guix.gnu.org/][GNU Guix]]. Most of my work is released under either the
         [[https://www.gnu.org/licenses/lgpl-3.0.en.html][LGPL v3.0+]] or [[https://creativecommons.org/licenses/by-sa/4.0/][CC-BY-SA 4.0]].
-     
+
         I consider myself more of a software nerd than a hardware nerd. I
         am an unrepentent [[https://en.wikipedia.org/wiki/Lisp_(programming_language)][Lisper]]; The first language I reach for is [[https://common-lisp.net/][Common
         Lisp]], but I use ([[https://www.gnu.org/software/guile/][GNU Guile]]) [[https://groups.csail.mit.edu/mac/projects/scheme/][Scheme]], [[https://www.gnu.org/software/emacs/manual/html_node/eintr/][Emacs Lisp]], and [[https://clojure.org/][Clojure]] when
         the situation calls for them. I especially like [[https://en.wikipedia.org/wiki/Text_processing][Text Processing]] and
         [[https://en.wikipedia.org/wiki/Data_manipulation_language][Data Manipulation]]. For databases I prefer [[https://www.postgresql.org/][PostgreSQL]].
-     
+
         I maintain a couple of websites other than this one. Here are the
         main ones:
-     
+
         - [[https://yewscion.com/][Yewscion]] - My Tech Blog.
         - [[http://proseandprosody.com][Prose and Prosody]] - My Fiction Site.
         - [[http://tumblingowl.com][Tumbling Owl]] - My Game Site.
         - [[http://toftandtoddy.com][Todt and Toddy]] - My Music Site.
-     
-     
+
+
         As for this site, it is meant to be a hub of sorts for everything I
         publish, along with a repository of any content that doesn't fit on
         other sites (my homepage).
      ,** Games
         I am, and always have been, an avid gamer.
-     
+
         I've recently moved more towards tabletop gaming, especially
         boardgames. I am active on [[https://boardgamegeek.com/user/yewscion][BoardGameGeek]]. I've published relatively
         little of my own gaming content, though I still have some stuff in
         the works.
-     
+
         As for video gaming, I prefer DRM-free releases and FLOSS projects
         when possible. I also prefer strategy / simulation games to the
         more twitchy ones, and much prefer a keyboard to a controller.
      ,** Music
         I am a Harper, a Composer, and an Irish Traditional Musician.
-     
+
         I love instrumental music the best, and have a large personal
         collection of MIDI and MOD files. Music I listen to in a wave
         format is usually stored in FLAC files. That said, I like all
         music, from Rap to Rock to Country to Metal.
-     
+
         My own music is usually published in MIDI form at first, usually
         using [[https://lilypond.org][GNU Lilypond]]. Then I will teach myself to play it on one
         instrument or another and make a recording of it after I'm happy
@@ -253,26 +253,134 @@
      ,** Writing
         I enjoy reading and writing, but more as a hobby that anything
         else.
-     
+
         I have many ongoing series on my Fiction Site, on which I publish
         little serial releases irregularly. The stories within I hope to
         use as the backdrop for my music or games eventualy, though its my
         hope that they will stand on their own as well.
-     
+
         One day I may publish some of my work in a hard copy. If I do, it
         will be referenced here.
    #+end_src
+** Music
+*** Lessons
+    Defunct / Removed for now.
+*** Compositions
+    #+begin_src org :tangle content/compositions/index.org
+      ,* Compositions
+
+      All of these works are licensed under [[https://creativecommons.org/licenses/by-sa/4.0/][CC-BY-SA 4.0]], which means You
+      can learn, play, record, and arrange them to Your heart's content as
+      long as You:
+
+      - Attribute me as the composer of the original.
+      - Let others do the same to the resulting work.
+
+      ,** *CDR-W*: The Preliminary Opretta of Pretty Music
+
+      This is my first series, and as such is fairly eclectic in its theming. If a piece doesn't fit anywhere else, it will be added to this one.
+
+      1. An Autumnal Meeting
+      2. Dancing on the Waves
+      3. A Night of Peace and Innocence (Missing as of 2015-04-29)
+      4. The Quest of the Cat
+      5. High Resolutions
+
+      ,** *CDR-HR*: Harp Regalia
+
+      The story of a year in a fictional persons life, with each piece
+      representing not a month or a season, but a milestone event that
+      happened.
+
+      1. Calea Victoriei
+
+      ,** *CDR-BNY*: The Bononyvi Tale
+
+      A tale from the legends of a fictional people (who, by the way, have
+      their own language) where two kingdoms clash before realizing the root
+      of their conflict was a common enemy they could work together to
+      defeat.
+
+      1. A Memory Withdraws
+      2. Sky Will Forget the Brilliant
+      3. It Carries Out the Dance of the Fates (Unfinished as of 2015-04-29)
+      4. For Battle Some Personality (To Be Extended as of 2015-04-29)
+
+      ,** *CDR-GNR*: Genera
+
+      With this series, I wanted to see how I would design the music for a
+      standard jRPG from the 90's. I don't have a story to go alongside it,
+      yet (as of 2015-04-29).
+
+      1. Title Theme
+
+      ,** *CDR-NBV*: Nubivagant
+
+      The soundtrack to a Visual Novel I am (eventually) developing where a
+      young woman is suddenly confronted with the chance to "Walk on the
+      Wind," and must decide for herself whether or not the risks involved
+      are worth it.
+
+      1. Nubivagant (Wind Quartet)
+
+      ,** *CDR-PNU*: Penant Umbra
+
+      An Idea I had while I was watching some movies turned into a concept
+      for a song, and a series, expressing the dual… or tri… nature of life,
+      depending upon one's current perspective.
+
+      1. Penant Umbra
+
+      ,** *CDR-PYG*: Project Pygmalion
+
+      Two engaged lovers find an antique dress at a pawn shop and compete in
+      a dangerous sport to win it. A cyberpunk romantic tragedy with
+      horrific undertones. And each scene is going to have a piece of music
+      associated with it.
+
+      1. [PYG] Malion - The title theme
+
+      ,** *CDR-SW*: /r/songaweek challenges
+
+      Weekly song challenge from [[https://www.reddit.com/r/songaweek/][reddit]]. Each week as a theme. I don't
+      participate regularly, but I will collect all of my pieces here.
+
+      1. Thirteen Point Three - Ballad of Vir [2017-W01 - Theme: Off by One]
+
+
+    #+end_src
+*** Recordings
+*** Transcriptions
+** Games
+*** Tabletop Games
+*** Video Games
+*** TTRPG Logs
+*** Reviews
+** Fiction
+*** Novel Drafts
+*** Serial Fiction
+*** Microfiction
+** Computers
+*** Software
+*** Tech Support
+*** GNU/Linux
+*** How-Tos
+** Misc
+*** Links
+*** Conlangs
+*** Collections
+*** Curios
 * Style
   #+begin_src css :tangle content/style/main.css
     @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Press+Start+2P&display=swap');
-    
+
     html {
         background-color: #FFFBF7;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 2000 1500'%3E%3Cdefs%3E%3Crect stroke='%23FFFBF7' stroke-width='0.2' width='1' height='1' id='s'/%3E%3Cpattern id='a' width='3' height='3' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cuse fill='%23fcf8f5' href='%23s' y='2'/%3E%3Cuse fill='%23fcf8f5' href='%23s' x='1' y='2'/%3E%3Cuse fill='%23faf6f2' href='%23s' x='2' y='2'/%3E%3Cuse fill='%23faf6f2' href='%23s'/%3E%3Cuse fill='%23f7f3ef' href='%23s' x='2'/%3E%3Cuse fill='%23f7f3ef' href='%23s' x='1' y='1'/%3E%3C/pattern%3E%3Cpattern id='b' width='7' height='11' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23f5f1ed'%3E%3Cuse href='%23s'/%3E%3Cuse href='%23s' y='5' /%3E%3Cuse href='%23s' x='1' y='10'/%3E%3Cuse href='%23s' x='2' y='1'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='8'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='5' y='2'/%3E%3Cuse href='%23s' x='5' y='6'/%3E%3Cuse href='%23s' x='6' y='9'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='h' width='5' height='13' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23f5f1ed'%3E%3Cuse href='%23s' y='5'/%3E%3Cuse href='%23s' y='8'/%3E%3Cuse href='%23s' x='1' y='1'/%3E%3Cuse href='%23s' x='1' y='9'/%3E%3Cuse href='%23s' x='1' y='12'/%3E%3Cuse href='%23s' x='2'/%3E%3Cuse href='%23s' x='2' y='4'/%3E%3Cuse href='%23s' x='3' y='2'/%3E%3Cuse href='%23s' x='3' y='6'/%3E%3Cuse href='%23s' x='3' y='11'/%3E%3Cuse href='%23s' x='4' y='3'/%3E%3Cuse href='%23s' x='4' y='7'/%3E%3Cuse href='%23s' x='4' y='10'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='c' width='17' height='13' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23f2eeea'%3E%3Cuse href='%23s' y='11'/%3E%3Cuse href='%23s' x='2' y='9'/%3E%3Cuse href='%23s' x='5' y='12'/%3E%3Cuse href='%23s' x='9' y='4'/%3E%3Cuse href='%23s' x='12' y='1'/%3E%3Cuse href='%23s' x='16' y='6'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='d' width='19' height='17' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23FFFBF7'%3E%3Cuse href='%23s' y='9'/%3E%3Cuse href='%23s' x='16' y='5'/%3E%3Cuse href='%23s' x='14' y='2'/%3E%3Cuse href='%23s' x='11' y='11'/%3E%3Cuse href='%23s' x='6' y='14'/%3E%3C/g%3E%3Cg fill='%23efebe8'%3E%3Cuse href='%23s' x='3' y='13'/%3E%3Cuse href='%23s' x='9' y='7'/%3E%3Cuse href='%23s' x='13' y='10'/%3E%3Cuse href='%23s' x='15' y='4'/%3E%3Cuse href='%23s' x='18' y='1'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='e' width='47' height='53' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23883600'%3E%3Cuse href='%23s' x='2' y='5'/%3E%3Cuse href='%23s' x='16' y='38'/%3E%3Cuse href='%23s' x='46' y='42'/%3E%3Cuse href='%23s' x='29' y='20'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='f' width='59' height='71' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23883600'%3E%3Cuse href='%23s' x='33' y='13'/%3E%3Cuse href='%23s' x='27' y='54'/%3E%3Cuse href='%23s' x='55' y='55'/%3E%3C/g%3E%3C/pattern%3E%3Cpattern id='g' width='139' height='97' patternUnits='userSpaceOnUse' patternTransform='scale(7.25) translate(-862.07 -646.55)'%3E%3Cg fill='%23883600'%3E%3Cuse href='%23s' x='11' y='8'/%3E%3Cuse href='%23s' x='51' y='13'/%3E%3Cuse href='%23s' x='17' y='73'/%3E%3Cuse href='%23s' x='99' y='57'/%3E%3C/g%3E%3C/pattern%3E%3C/defs%3E%3Crect fill='url(%23a)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23b)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23h)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23c)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23d)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23e)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23f)' width='100%25' height='100%25'/%3E%3Crect fill='url(%23g)' width='100%25' height='100%25'/%3E%3C/svg%3E");
         background-attachment: fixed;
         background-size: cover;
     }
-    
+
     body {
         max-width: 70%;
         margin: auto;
@@ -283,46 +391,48 @@
         border-right: 0.2em solid #683600;
         border-left: 0.2em solid #683600;
     }
-    
+
     a:link {
         text-decoration: none;
         color: #683600;
     }
-    
+
     a:visited {
         text-decoration: none;
     }
-    
+
     a:hover {
         text-decoration: underline;
     }
-    
+
     a:active {
         text-decoration: none;
     }
-    
+
     ::selection {
         background: #683600;
         color: #FFFBF7;
     }
-    
+
     header {
         display: flex;
         align-items: baseline;
         margin: auto;
     }
-    
+
+    header > a {
+        margin-left: 8%;
+    }
+
     header > a > h1 {
         font-family: 'Press Start 2P', cursive;
         font-size: x-large;
         text-align: left;
-        padding-left: 1em;
-        font-size: 2em;
         color: #683600;
         margin-right: 2em;
         background-color: #FFFBF7;
     }
-    
+
     header > a:link {
         color: black;
     }
@@ -337,20 +447,20 @@
         color: #683600;
         background-color: #EEEAE6;
     }
-    
+
     /* Navigation */
     header > nav {
         background-color: #FFFBF7;
         margin-right: auto;
     }
-    
-    
+
+
     nav ul {
         margin: 0;
         margin-left: 1em;
         padding: 0;
     }
-    
+
     nav ul li {
         display: inline-block;
         list-style-type: none;
@@ -398,7 +508,7 @@
     nav > ul > li > div > ul > li > a:hover {
         color: #FBF7F3;
     }
-    
+
     /* Main Content */
     #content {
         background-color: #FBF7F3;
@@ -418,17 +528,17 @@
     #content h4 {
         background-color: #333;
         color: #CCC; }
-    
+
     /* Images */
     #content img {
         max-width: 200px;
         border: 1px solid #683600; }
-    
+
     /* Definition Lists */
     #content dt {
         font-weight: bold;
     }
-    
+
     /* Tables */
     #content table {
         display: table;
@@ -456,7 +566,7 @@
         margin-bottom: 1em;
         line-height: 2em;
     }
-    
+
     /* Footer */
     footer {
         text-align: center;
@@ -466,7 +576,7 @@
         background-color: rgba(100,50,0,0.1);
         border: 1px solid #683600;
     }
-    
+
     /* Class Extensions to Style */
     .strikethrough {
         text-decoration: line-through;
@@ -480,11 +590,11 @@
         grid-template-columns: 1fr 1fr 1fr;
         grid-template-rows: 1fr 7fr;
     }
-    
+
     .grid-alpha-container > .outline-text-2 {
         display: none;
     }
-    
+
     .grid-alpha-r2c1 {
         padding-left: 1em;
         padding-right: 1em;
@@ -509,7 +619,7 @@
     .grid-alpha-r2c1 > h4 {
         background-color: #683600;
     }
-    
+
     /* IRC Log Formatting */
     .irc-date {
         color: #CCBBBB;
