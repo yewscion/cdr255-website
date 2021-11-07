@@ -114,7 +114,7 @@
              <div>
                <ul>
                  <li>
-                   <a href="/games/">My Games</a>
+                   <a href="/tabletop/">Tabletop Games</a>
                  </li>
                  <li>
                    <a href="/logs/">TTRPG Logs</a>
@@ -236,9 +236,9 @@
     #+name: index-content
     #+begin_src html :noweb yes
       <main>
-        <article>
-          <h2>Last Update: 2021-10-01</h2>
-          <aside class="notification">
+        <div class="underlay">
+          <aside>
+            <h2>Last Update: 2021-10-01</h2>
             <p>
               Decided to finally do a renovation on this site.
             </p>
@@ -252,8 +252,8 @@
             </p>
           </aside>
           <h2>Today's Specials</h2>
-          <div class="columns">
-            <section class="column is-one-third">
+          <article class="grid-by-3">
+            <section>
               <h3>Music</h3>
               <h4>Thirteen Point Three</h4>
               <p>
@@ -276,9 +276,9 @@
                   controls
                   src="assets/01-thirteen-point-three-midi.mp3"
                   type="audio/mp3">
-                Your browser does not support the <code>audio</code>
-                tag. Check the track out on
-                <a href="https://soundcloud.com/cdr255/thirteen-point-three">Soundcloud</a>!
+                  Your browser does not support the <code>audio</code>
+                  tag. Check the track out on
+                  <a href="https://soundcloud.com/cdr255/thirteen-point-three">Soundcloud</a>!
                 </audio>
               </figure>
             </section>
@@ -321,8 +321,8 @@
                 </a>
               </p>
             </section>
-          </div>
-        </article>
+          </article>
+        </div>
       </main>
     #+end_src
 ** About
@@ -337,113 +337,125 @@
     #+name: about-content
     #+begin_src html
       <main>
-        <article>
-          <h2>About Me</h2>
-          <p>
-            My name is Christopher Rodriguez.
-          </p>
-          <h3>Technology</h3>
-          <p>
-            I'm a huge proponent of Free Software and Free Culture. My OS of
-            choice is
-            <a href="https://guix.gnu.org/">GNU Guix</a>.
-            Most of my work is released under either the
-            <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">LGPL v3.0+</a>
-            or
-            <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>.
-          </p>
-          <p>
-            I consider myself more of a software nerd than a hardware
-            nerd. I am an unrepentent
-            <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisper</a>;
-            The first language I reach for is
-            <a href="https://common-lisp.net/">Common Lisp</a>,
-            but I use
-            (<a href="https://www.gnu.org/software/guile/">GNU Guile</a>)
-            <a href="https://groups.csail.mit.edu/mac/projects/scheme/">Scheme</a>,
-            <a href="https://www.gnu.org/software/emacs/manual/html_node/eintr/">Emacs Lisp</a>,
-            and
-            <a href="https://clojure.org/">Clojure</a> when the situation
-            calls for them. I especially
-            like
-            <a href="https://en.wikipedia.org/wiki/Text_processing">Text Processing</a> and
-            <a href="https://en.wikipedia.org/wiki/Data_manipulation_language">Data Manipulation</a>.
-            For databases I prefer <a href="https://www.postgresql.org/">PostgreSQL</a>.
-          </p>
-          <p>
-            I maintain a couple of websites other than this one. Here are
-            the main ones:
-          </p>
-          <ul class="org-ul">
-            <li>
-              <a href="https://yewscion.com/">Yewscion</a> - My Tech
-              Blog.</li>
-            <li><a href="http://proseandprosody.com">Prose and Prosody</a> -
-            My Fiction Site.</li>
-            <li><a href="http://tumblingowl.com">Tumbling Owl</a> - My Game
-            Site.</li>
-            <li><a href="http://toftandtoddy.com">Todt and Toddy</a> - My
-            Music Site.</li>
-          </ul>
-          <p>
-            As for this site, it is meant to be a hub of sorts for
-            everything I publish, along with a repository of any content
-            that doesn't fit on other sites (my homepage).
-          </p>
-          <h3>Games</h3>
-          <p>
-            I am, and always have been, an avid gamer.
-          </p>
-          <p>
-            I've recently moved more towards tabletop gaming, especially
-            boardgames. I am active
-            on <a href="https://boardgamegeek.com/user/yewscion">BoardGameGeek</a>. I've
-            published relatively little of my own gaming content, though I
-            still have some stuff in the works.
-          </p>
-          <p>
-            As for video gaming, I prefer DRM-free releases and FLOSS
-            projects when possible. I also prefer strategy / simulation
-            games to the more twitchy ones, and much prefer a keyboard to a
-            controller.
-          </p>
-          <h3>Music</h3>
-          <p>
-            I am a Harper, a Composer, and an Irish Traditional Musician.
-          </p>
-          <p>
-            I love instrumental music the best, and have a large personal
-            collection of MIDI and MOD files. Music I listen to in a wave
-            format is usually stored in FLAC files. That said, I like all
-            music, from Rap to Rock to Country to Metal.
-          </p>
-          <p>
-            My own music is usually published in MIDI form at first, usually
-            using <a href="https://lilypond.org">GNU Lilypond</a>. Then I
-            will teach myself to play it on one instrument or another and
-            make a recording of it after I'm happy with the MIDI
-            composition. Unless otherwise stated, all of my work is
-            published
-            under
-            <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA
-            4.0</a>.
-          </p>
-          <h3>Writing</h3>
-          <p>
-            I enjoy reading and writing, but more as a hobby that anything
-            else.
-          </p>
-          <p>
-            I have many ongoing series on my Fiction Site, on which I
-            publish little serial releases irregularly. The stories within I
-            hope to use as the backdrop for my music or games eventualy,
-            though its my hope that they will stand on their own as well.
-          </p>
-          <p>
-            One day I may publish some of my work in a hard copy. If I do, it
-            will be referenced here.
-          </p>
-        </article>
+        <div class="underlay">
+          <aside>
+            <h2>About Me</h2>
+            <p>
+              My name is Christopher Rodriguez.
+            </p>
+          </aside>
+          <article class="grid-by-3">
+            <section>
+              <h3>Technology</h3>
+              <p>
+                I'm a huge proponent of Free Software and Free Culture. My OS of
+                choice is
+                <a href="https://guix.gnu.org/">GNU Guix</a>.
+                Most of my work is released under either the
+                <a href="https://www.gnu.org/licenses/lgpl-3.0.en.html">LGPL v3.0+</a>
+                or
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>.
+              </p>
+              <p>
+                I consider myself more of a software nerd than a hardware
+                nerd. I am an unrepentent
+                <a href="https://en.wikipedia.org/wiki/Lisp_(programming_language)">Lisper</a>;
+                The first language I reach for is
+                <a href="https://common-lisp.net/">Common Lisp</a>,
+                but I use
+                (<a href="https://www.gnu.org/software/guile/">GNU Guile</a>)
+                <a href="https://groups.csail.mit.edu/mac/projects/scheme/">Scheme</a>,
+                <a href="https://www.gnu.org/software/emacs/manual/html_node/eintr/">Emacs Lisp</a>,
+                and
+                <a href="https://clojure.org/">Clojure</a> when the situation
+                calls for them. I especially
+                like
+                <a href="https://en.wikipedia.org/wiki/Text_processing">Text Processing</a> and
+                <a href="https://en.wikipedia.org/wiki/Data_manipulation_language">Data Manipulation</a>.
+                For databases I prefer <a href="https://www.postgresql.org/">PostgreSQL</a>.
+              </p>
+              <p>
+                I maintain a couple of websites other than this one. Here are
+                the main ones:
+              </p>
+              <ul class="org-ul">
+                <li>
+                  <a href="https://yewscion.com/">Yewscion</a> - My Tech
+                  Blog.</li>
+                <li><a href="http://proseandprosody.com">Prose and Prosody</a> -
+                  My Fiction Site.</li>
+                <li><a href="http://tumblingowl.com">Tumbling Owl</a> - My Game
+                  Site.</li>
+                <li><a href="http://toftandtoddy.com">Todt and Toddy</a> - My
+                  Music Site.</li>
+              </ul>
+              <p>
+                As for this site, it is meant to be a hub of sorts for
+                everything I publish, along with a repository of any content
+                that doesn't fit on other sites (my homepage).
+              </p>
+            </section>
+            <section>
+              <h3>Games</h3>
+              <p>
+                I am, and always have been, an avid gamer.
+              </p>
+              <p>
+                I've recently moved more towards tabletop gaming, especially
+                boardgames. I am active
+                on <a href="https://boardgamegeek.com/user/yewscion">BoardGameGeek</a>. I've
+                published relatively little of my own gaming content, though I
+                still have some stuff in the works.
+              </p>
+              <p>
+                As for video gaming, I prefer DRM-free releases and FLOSS
+                projects when possible. I also prefer strategy / simulation
+                games to the more twitchy ones, and much prefer a keyboard to a
+                controller.
+              </p>
+            </section>
+            <section>
+              <h3>Music</h3>
+              <p>
+                I am a Harper, a Composer, and an Irish Traditional Musician.
+              </p>
+              <p>
+                I love instrumental music the best, and have a large personal
+                collection of MIDI and MOD files. Music I listen to in a wave
+                format is usually stored in FLAC files. That said, I like all
+                music, from Rap to Rock to Country to Metal.
+              </p>
+              <p>
+                My own music is usually published in MIDI form at first, usually
+                using <a href="https://lilypond.org">GNU Lilypond</a>. Then I
+                will teach myself to play it on one instrument or another and
+                make a recording of it after I'm happy with the MIDI
+                composition. Unless otherwise stated, all of my work is
+                published
+                under
+                <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA
+                  4.0</a>.
+              </p>
+            </section>
+            <section>
+              <h3>Writing</h3>
+              <p>
+                I enjoy reading and writing, but more as a hobby that anything
+                else.
+              </p>
+              <p>
+                I have many ongoing series on my Fiction Site, on which I
+                publish little serial releases irregularly. The stories within I
+                hope to use as the backdrop for my music or games eventualy,
+                though its my hope that they will stand on their own as well.
+              </p>
+              <p>
+                One day I may publish some of my work in a hard copy. If I do, it
+                will be referenced here.
+              </p>
+            </section>
+          </article>
+        </div>
       </main>
     #+end_src
 ** Music
@@ -459,111 +471,129 @@
      #+name: compositions-content
      #+begin_src html
        <main>
-         <article>
+         <div class="underlay">
            <h2>Compositions</h2>
-           <p>
-             All of these works are licensed under
-             <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>,
-             which means You can learn, play, record, and arrange
-             them to Your heart's content as long as You:
-           </p>
-           <ul>
-             <li>Attribute me as the composer of the original.</li>
-             <li>Let others do the same to the resulting work.</li>
-           </ul>
-           <h3><i>CDR-W</i>: The Preliminary Opretta of Pretty Music</h3>
-           <p>
-             This is my first series, and as such is fairly eclectic in its
-             theming. If a piece doesn't fit anywhere else, it will be added
-             to this one.
-           </p>
-           <ol>
-             <li>An Autumnal Meeting</li>
-             <li>Dancing on the Waves</li>
-             <li>A Night of Peace and Innocence (Missing as of 2015-04-29)</li>
-             <li>The Quest of the Cat</li>
-             <li>High Resolutions</li>
-           </ol>
+           <aside>
+             <p>
+               All of these works are licensed under
+               <a href="https://creativecommons.org/licenses/by-sa/4.0/">CC-BY-SA 4.0</a>,
+               which means You can learn, play, record, and arrange
+               them to Your heart's content as long as You:
+             </p>
+             <ul>
+               <li>Attribute me as the composer of the original.</li>
+               <li>Let others do the same to the resulting work.</li>
+             </ul>
+           </aside>
+           <article class="grid-by-3">
+             <section>
+               <h3><i>CDR-W</i>: The Preliminary Opretta of Pretty Music</h3>
+               <p>
+                 This is my first series, and as such is fairly eclectic in its
+                 theming. If a piece doesn't fit anywhere else, it will be added
+                 to this one.
+               </p>
+               <ol>
+                 <li>An Autumnal Meeting</li>
+                 <li>Dancing on the Waves</li>
+                 <li>A Night of Peace and Innocence (Missing as of 2015-04-29)</li>
+                 <li>The Quest of the Cat</li>
+                 <li>High Resolutions</li>
+               </ol>
+             </section>
+             <section>
+               <h3><i>CDR-HR</i>: Harp Regalia</h3>
+               <p>
+                 The story of a year in a fictional persons life, with each piece
+                 representing not a month or a season, but a milestone event that
+                 happened.
+               </p>
 
-           <h3><i>CDR-HR</i>: Harp Regalia</h3>
-           <p>
-             The story of a year in a fictional persons life, with each piece
-             representing not a month or a season, but a milestone event that
-             happened.
-           </p>
+               <ol>
+                 <li>Calea Victoriei</li>
+               </ol>
+             </section>
+             <section>
+               <h3><i>CDR-BNY</i>: The Bononyvi Tale</h3>
+               <p>
+                 A tale from the legends of a fictional people (who, by the way,
+                 have their own language) where two kingdoms clash before
+                 realizing the root of their conflict was a common enemy they
+                 could work together to defeat.
+               </p>
 
-           <ol>
-             <li>Calea Victoriei</li>
-           </ol>
+               <ol>
+                 <li>A Memory Withdraws</li>
+                 <li>Sky Will Forget the Brilliant</li>
+                 <li>It Carries Out the Dance of the Fates (Unfinished as of 2015-04-29)</li>
+                 <li>For Battle Some Personality (To Be Extended as of 2015-04-29)</li>
+               </ol>
+             </section>
+             <section>
 
-           <h3><i>CDR-BNY</i>: The Bononyvi Tale</h3>
-           <p>
-             A tale from the legends of a fictional people (who, by the way,
-             have their own language) where two kingdoms clash before
-             realizing the root of their conflict was a common enemy they
-             could work together to defeat.
-           </p>
+               <h3><i>CDR-GNR</i>: Genera</h3>
+               <p>
+                 With this series, I wanted to see how I would design the music
+                 for a standard jRPG from the 90's. I don't have a story to go
+                 alongside it, yet (as of 2015-04-29).
+               </p>
+               <ol>
+                 <li>Title Theme</li>
+               </ol>
+             </section>
+             <section>
 
-           <ol>
-             <li>A Memory Withdraws</li>
-             <li>Sky Will Forget the Brilliant</li>
-             <li>It Carries Out the Dance of the Fates (Unfinished as of 2015-04-29)</li>
-             <li>For Battle Some Personality (To Be Extended as of 2015-04-29)</li>
-           </ol>
+               <h3><i>CDR-NBV</i>: Nubivagant</h3>
+               <p>
+                 The soundtrack to a Visual Novel I am (eventually) developing
+                 where a young woman is suddenly confronted with the chance to
+                 "Walk on the Wind," and must decide for herself whether or not
+                 the risks involved are worth it.
+               </p>
+               <ol>
+                 <li>Nubivagant (Wind Quartet)</li>
+               </ol>
+             </section>
+             <section>
 
-           <h3><i>CDR-GNR</i>: Genera</h3>
-           <p>
-             With this series, I wanted to see how I would design the music
-             for a standard jRPG from the 90's. I don't have a story to go
-             alongside it, yet (as of 2015-04-29).
-           </p>
-           <ol>
-             <li>Title Theme</li>
-           </ol>
+               <h3><i>CDR-PNU</i>: Penant Umbra</h3>
+               <p>
+                 An Idea I had while I was watching some movies turned into a
+                 concept for a song, and a series, expressing the dual… or tri…
+                 nature of life, depending upon one's current perspective.
+               </p>
+               <ol>
+                 <li>Penant Umbra</li>
+               </ol>
+             </section>
+             <section>
 
-           <h3><i>CDR-NBV</i>: Nubivagant</h3>
-           <p>
-             The soundtrack to a Visual Novel I am (eventually) developing
-             where a young woman is suddenly confronted with the chance to
-             "Walk on the Wind," and must decide for herself whether or not
-             the risks involved are worth it.
-           </p>
-           <ol>
-             <li>Nubivagant (Wind Quartet)</li>
-           </ol>
+               <h3><i>CDR-PYG</i>: Project Pygmalion</h3>
+               <p>
+                 Two engaged lovers find an antique dress at a pawn shop and
+                 compete in a dangerous sport to win it. A cyberpunk romantic
+                 tragedy with horrific undertones. And each scene is going to
+                 have a piece of music associated with it.
+               </p>
+               <ol>
+                 <li>[PYG] Malion - The title theme</li>
+               </ol>
+             </section>
+             <section>
 
-           <h3><i>CDR-PNU</i>: Penant Umbra</h3>
-           <p>
-             An Idea I had while I was watching some movies turned into a
-             concept for a song, and a series, expressing the dual… or tri…
-             nature of life, depending upon one's current perspective.
-           </p>
-           <ol>
-             <li>Penant Umbra</li>
-           </ol>
-
-           <h3><i>CDR-PYG</i>: Project Pygmalion</h3>
-           <p>
-             Two engaged lovers find an antique dress at a pawn shop and
-             compete in a dangerous sport to win it. A cyberpunk romantic
-             tragedy with horrific undertones. And each scene is going to
-             have a piece of music associated with it.
-           </p>
-           <ol>
-             <li>[PYG] Malion - The title theme</li>
-           </ol>
-
-           <h3><i>CDR-SW</i>: /r/songaweek challenges</h3>
-           <p>
-             Weekly song challenge
-             from <a href="https://www.reddit.com/r/songaweek/">reddit</a>. Each
-             week as a theme. I don't participate regularly, but I will
-             collect all of my pieces here.
-           </p>
-           <ol>
-             <li>Thirteen Point Three - Ballad of Vir [2017-W01 - Theme: Off by One]</li>
-           </ol>
-         </article>
+               <h3><i>CDR-SW</i>: /r/songaweek challenges</h3>
+               <p>
+                 Weekly song challenge
+                 from <a href="https://www.reddit.com/r/songaweek/">reddit</a>. Each
+                 week as a theme. I don't participate regularly, but I will
+                 collect all of my pieces here.
+               </p>
+               <ol>
+                 <li>Thirteen Point Three - Ballad of Vir [2017-W01 - Theme: Off by One]</li>
+               </ol>
+             </section>
+           </article>
+         </div>
        </main>
      #+end_src
     #+begin_src org :tangle content/compositions/index.org
@@ -652,10 +682,881 @@
 *** Lessons
     Defunct / Removed for now.
 *** Recordings
+    #+begin_src html :tangle public/recordings/index.html :noweb yes
+      <<site-pre(title="cdr255.com - Recordings",canonical="https://cdr255.com/recordings/")>>
+      <<site-header>>
+      <<recordings-content>>
+      <<site-footer>>
+      <<site-post>>
+    #+end_src
+**** Recordings Content
+     #+name: recordings-content
+     #+begin_src html
+       <main>
+         <div class="underlay">
+             <h2>Recordings</h2>
+             <article class="grid-by-3">
+               <section>
+                 <h3>Soundcloud</h3>
+                 <iframe scrolling="no" src="https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/users/27329752&amp;color=ff5500&amp;auto_play=false&amp;hide_related=false&amp;show_comments=false&amp;show_user=true&amp;show_reposts=false" width="100%" height="450" frameborder="no"></iframe>
+               </section>
+               <section>
+                 <h3>Bandcamp</h3>
+                 <iframe style="border: 0; width: 350px; height: 442px; display: block; margin: auto;" src="https://bandcamp.com/EmbeddedPlayer/track=3262379823/size=large/bgcol=ffffff/linkcol=de270f/tracklist=false/transparent=true/" seamless="">
+                   2013 Demo Snippet by Chris Rodriguez</iframe>
+               </section>
+           </article>
+       </main>
+     #+end_src
 *** Transcriptions
+    Will Be Added Once I have something to put there!
 ** Games
 *** Tabletop Games
+    #+begin_src html :tangle public/tabletop/index.html :noweb yes
+      <<site-pre(title="cdr255.com - Tabletop Games",canonical="https://cdr255.com/tabletop/")>>
+      <<site-header>>
+      <<tabletop-content>>
+      <<site-footer>>
+      <<site-post>>
+    #+end_src
+**** Tabletop Content
+     #+name: tabletop-content
+     #+begin_src html
+       <main>
+         <div class="underlay"
+         <aside>
+           <h2>Tabletop Games</h2>
+           <p>These are the games I am currently designing that are meant to
+           be played on a table, with some friends around You.</p>
+         </aside>
+         <article class="grid-by-3">
+           <section>
+             <h3>Pathfinder Supplements</h3>
+             <p>Various Handouts I’ve made to support my <a href="http://paizo.com/">Pathfinder</a> games.</p>
+             <ul>
+               <li><a href="/lacis-lycorma/handout001/">Lacis Lycorma Booklet #001</a> - <a href="/assets/rpg.pathfinder.lacis-lycorma-handout-01.pdf">PDF</a></li>
+               <li><a href="/assets/rpg.pathfinder.character-questionnaire.pdf">Pathfinder Character Detail Packet v2.0</a></li>
+             </ul>
+           </section>
+           <section>
+             <h3>True20 Supplements</h3>
+             <p>I once ran a 100% homebrew ttrpg campaign using the <a href="http://true20.com/">True20</a>
+               system, and figured I would post the WIP-style SRDs I used here.</p>
+             <ul>
+               <li><a href="/falode/backgrounds/">Backgrounds</a></li>
+               <li><a href="/falode/codes/">Codes of Honor</a></li>
+               <li><a href="/falode/pantheon/">The Falodian Pantheon</a></li>
+               <li><a href="https://s3.amazonaws.com/cdr255/beebrook-area-pregame.png">Map of Beebrook Region</a></li>
+             </ul>
+           </section>
+           <section>
+             <h3>Board Games</h3>
+             <ul>
+               <li><strong>Elemental Warfare</strong> - A game about gaining and holding on to
+                 territory.</li>
+             </ul>
+           </section>
+         </article>
+       </main>
+     #+end_src
+**** Falodian Backgrounds
+     #+begin_src html :tangle public/falode/backgrounds/index.html :noweb yes
+      <<site-pre(title="cdr255.com - Falodian Backgrounds",canonical="https://cdr255.com/falode/backgrounds/")>>
+      <<site-header>>
+      <<falodian-backgrounds-content>>
+      <<site-footer>>
+      <<site-post>>
+     #+end_src
+***** Falodian Backgrounds Content
+      #+name: falodian-backgrounds-content
+      #+begin_src html
+        <main>
+          <div class="underlay">
+            <h2>Falodian Backgrounds</h2>
+            <article class="grid-by-3">
+              <section>
+                <h3>Dorsht Seeker</h3>
+                <p>The <dfn>Dorsht</dfn> are a race of mountain dwellers who live
+                  inside the Kingdom of Falode, but maintain their own “country”
+                  (in the mountain range to the South of Beebrook) through a
+                  special alliance with the King. They have coarse, muted hair
+                  that they often braid or dye, rough, pale brown skin from
+                  spending so much of their lives indoors, and a stockier, rounder
+                  build than those of the Falodians.</p>
+                <p><dfn>Seekers</dfn> are those of the Dorsht who leave the
+                  mountains in search of something, be it technology, absolution,
+                  or purpose. There are thus many reasons the Dorsht might become
+                  adventurers. Many will eventually return to the mountains; Those
+                  that don’t before their demise become the new target for some
+                  other Seeker.</p>
+                <p>The Dorsht wear face paint each and every day. This face paint
+                  is both reflective of their role in their society, their
+                  personal history, and what they value in life. Each Dorsht has a
+                  glyph that they alone are prescribed, which stays with them
+                  through their entire lives and adorns their face each waking
+                  day. This is the minimum they are willing to resort to, if they
+                  cannot access their paints or doing so would be
+                  inappropriate.</p>
+                <dl>
+                  <dt>Ability Adjustments</dt>
+                  <dd>+1 Con</dd>
+                  <dd>-1 Cha</dd>
+                  <dt>Bonus Feats</dt>
+                  <dd>Night Vision</dd>
+                  <dd>Second Chance (Mental Control)</dd>
+                  <dd>Tough</dd>
+                  <dt>Favored Feats</dt>
+                  <dd>Tough</dd>
+                  <dd>Diehard</dd>
+                </dl>
+              </section>
+              <section>
+                <h3>Ehdrin Traveler</h3>
+                <p>The <dfn>Ehdrin are a reclusive people from the Isthmus beyond
+                    the Western Borders of Falode. They are a tall, golden-tawny
+                    people with brightly colored hair. Both their men and women have
+                    no facial hair to speak of, though they tend to decorate their
+                    hair with styling and beads.</p>
+                <p>They are largely a reclusive people, rarely allowing foreigners
+                  to come into contact with them. As a result, most Ehdrin
+                  Adventurers are designated (in one way or another)
+                  as <dfn>Travelers</dfn> for the Ehdrin: Ambassadors who ‘travel
+                  the world looking for any events which might bring trouble to
+                  the Ehdrin’ and are expected to report back, should something of
+                  any magnitude come to pass.</p>
+                <p>Ehdrin Travelers are, before their departure (or their exile) given
+                  two tattoos: One on the back of each hand. The left is a regional one
+                  that relates to their life before becoming a traveler. The right is a
+                  personal, individual symbol used to identify them, and only
+                  them. Through magic, these tattoos are echoed through their skin onto
+                  their very bones, so that they might be identified should only their
+                  skeleton remain intact.</p>
+                <dl>
+                  <dt>Ability Adjustments</dt>
+                  <dd>+1 Int</dd>
+                  <dd>-1 Str</dd>
+                  <dt>Bonus Feats</dt>
+                  <dd>Assessment</dd>
+                  <dd>Light Sleeper</dd>
+                  <dt>Bonus Skills:</dt>
+                  <dd>One Skill of Player’s Choice</dd>
+                  <dt>Favored Feats:</dt>
+                  <dd>Well-Informed</dd>
+                  <dd>Seize Initiative</dd>
+                </dl>
+              </section>
+              <section>
+                <h3>Falodian Noble</h3>
+                <p>The <dfn>Noble Class</dfn> in the Kingdom of Falonde is charged
+                  with “Upholding the honor of Falonde to ourselves and others.”
+                  They are fair-skinned, with dark brown or black hair. They
+                  nearly all have violet eyes; Other colors are seen as a mixed
+                  heritage of some sort. They tend to be of average height, with
+                  women being slightly shorter than men.</p>
+                <p>Nobles in Falode are charged with being observant and inclusive of all
+                  around them at the expense of knowing history or studying. Though they
+                  are the ‘ruling class’ of Falode, they view themselves lower than
+                  others: They have been charged with a Duty to keep things working and
+                  help others to live their lives in exchange for the resources and
+                  freedom to enact that as best as they can from the Queen and King.</p>
+                <p>Each Noble Family has a different Charge, with grouped families
+                  sharing the same colors.  The rest of the specific coat of arms is
+                  chosen by the individual, and all Nobles must have a coat of arms on
+                  record with the king. They are given a set of ceremonial armor in
+                  their family’s colors, which they are very used to wearing at all
+                  formal events.</p>
+                <dl>
+                  <dt>Ability Adjustments</dt>
+                  <dd>+1 Wis</dd>
+                  <dd>-1 Int</dd>
+                  <dt>Bonus Feats</dt>
+                  <dd>Benefit(Diplomatic Immunity)</dd>
+                  <dd>Armor Training(Light)</dd>
+                  <dt>Bonus Skills</dt>
+                  <dd>Diplomacy</dd>
+                  <dd>Knowledge(Nobility)</dd>
+                  <dt>Favored Feats</dt>
+                  <dd>Fascinate</dd>
+                  <dd>Favored Opponent</dd>
+                </dl>
+              </section>
+              <section>
+                <h3>Falodian Commoner</h3>
+                <p>Unlike Nobles, the <dfn>Peasantry</dfn> of the Kingdom of
+                  Falode do not uphold much other than themselves (and
+                  occasionally each other). They, as the nobles, tend to be fair
+                  skinned, but have lighter colored hair and blue or brown
+                  eyes. They tend to be of average height, with women slightly
+                  shorter than men.</p>
+                <p>Commoners try to eke out enough of a living to survive, and are
+                  often forced to do manual labor of some sort. Their culture, in
+                  possible response to the more world-mindedness of the nobles, is
+                  very self involved. They become used to running, as time is a
+                  premium and danger haunts the less populated areas. But, they
+                  are quick learners, and become very good at what they choose to
+                  do.</p>
+                <p>Far from the complex coat of arms the Nobles concern themselves
+                  with, each Commoner family gets their own secret sign, which
+                  along with short symbols (like danger, friendly, emergency, and
+                  such) form a sort of language used to communicate
+                  information. This varies somewhat from town to town, but the big
+                  symbols always stay the same (and family symbols are always
+                  different).</p>
+                <dl>
+                  <dt>Ability Adjustments</dt>
+                  <dd>+1 Str</dd>
+                  <dd>-1 Wis</dd>
+                  <dt>Bonus Feats</dt>
+                  <dd>Run</dd>
+                  <dd>Endurance</dd>
+                  <dd>Skill Training</dd>
+                  <dt>Favored Feats</dt>
+                  <dd>Weapon Break</dd>
+                  <dd>Hide in Plain Sight</dd>
+                </dl>
+              </section>
+              <section>
+                <h3>Khula Trader</h3>
+                <p>The <dfn>Khula</dfn> are a race of brown-skinned people who’ve
+                  settled to the North of Beebrook, just outside the limits of the
+                  Kingdom of Falode. They have coarse, dark hair, and green (and
+                  sometimes hazel or brown) eyes. They are on the shorter side,
+                  with women being taller than men.</p>
+                <p>The Khula are an industrious people. The land they’ve decided
+                  to call home is relatively isolated; what they cannot obtain
+                  naturally they trade for from others. This has created a class
+                  of Khula <dfn>Traders</dfn>, who leave their country regularly
+                  in an effort to procure items, deals, and connections for their
+                  homeland. Though it’s expected they return regularly, provided
+                  they remain in contact with the Khula they can be out in the
+                  field for years at a time.</p>
+                <p>Each Khula Trader is given a cane, decorated with symbols
+                  representing their family, their deeds, and their
+                  specialties. They thus accumulate a breadth of symbols over the
+                  course of their lives, but none is so important as the top of
+                  the cane, which is often an ornate crystal of some kind, set
+                  with a design that is uniquely their own.</p>
+                <dl>
+                  <dt>Ability Adjustments</dt>
+                  <dd>+1 Cha</dd>
+                  <dd>-1 Dex</dd>
+                  <dt>Bonus Feats</dt>
+                  <dd>Connected</dd>
+                  <dd>Wealthy</dd>
+                  <dd>Contacts</dd>
+                  <dt>Favored Power</dt>
+                  <dd>Object Reading</dd>
+                </dl>
+              </section>
+              <section>
+                <h3>Viliniti Diasporan</h3>
+                <p>The <dfn>Viliniti</dfn> used to live in what is now Eastern
+                  Falode. They are a short people with ochre colored skin and dark
+                  colored hair and eyes. They are graceful, both in movement and
+                  deed, but their rather sparse way of life leaves them more frail
+                  than others.</p>
+                <p>The Viliniti now live among the Falode in small, discrete
+                  groups. Though Eastern Falode belonged to them a few centuries
+                  ago, there are only a small number of people who still feel they
+                  should not cooperate with the Kingdom (to a point- they still
+                  look out for their own, just without active rebellion). They are
+                  naturally migratory, and thus any Viliniti might become an
+                  adventurer.</p>
+                <p>The Viliniti have always had a ‘knack with animals’. They have
+                  a heightened sense of smell, and seem to be able to communicate
+                  fairly well with animals around them. They spend a lot of their
+                  lives travel ling, and have developed watchful eyes to prevent
+                  themselves from falling under misfortune.</p>
+                <p>Every Viliniti has a necklace with charms on it to remember
+                  important events in their life- including their birth. They are
+                  very protective of this necklace, though they have more than
+                  memorized each symbol it holds, and can recount with unerring
+                  detail each part of it, should it be destroyed. But, only a very
+                  small number of things will force a Viliniti to sacrifice their
+                  necklace.</p>
+                <dl>
+                  <dt>Ability Adjustments:</dt>
+                  <dd>+1 Dex</dd>
+                  <dd>-1 Con</dd>
+                  <dt>Bonus Feats:</dt>
+                  <dd>Keen Sense of Smell</dd>
+                  <dd>Animal Empathy</dd>
+                  <dt>Bonus Skills:</dt>
+                  <dd>Survival</dd>
+                  <dd>Notice</dd>
+                  <dt>Favored Feats:</dt>
+                  <dd>Beast Link</dd>
+                </dl>
+              </section>
+            </article>
+          </div>
+        </main>
+      #+end_src
+**** Falodian Codes of Honor
+     #+begin_src html :tangle public/falode/codes/index.html :noweb yes
+       <<site-pre(title="cdr255.com - Falodian Codes of Honor",canonical="https://cdr255.com/falode/codes/")>>
+       <<site-header>>
+       <<falodian-codes-content>>
+       <<site-footer>>
+       <<site-post>>
+     #+end_src
+***** Falodian Codes of Honor Content
+      #+name: falodian-codes-content
+      #+begin_src html
+        <main>
+          <div class="underlay">
+            <h2>Falodian Codes of Honor</h2>
+            <article class="grid-by-3">
+              <section>
+                <h3>Paladin Code</h3>
+                <blockquote>
+                  <p>The Paladin of Falode is the lowest of the high,<br />
+                    With all their colors shown and their shields to the sky.<br />
+                    They guard against injustice, for they know that not all can,<br />
+                    And they guard against the fervor of all new and unknown fans.<br />
+                    As symbols they must stand alone, bereft of any sin,<br />
+                    And hatred must never be known between their next of kin.<br />
+                    When needed they will put aside all else to make a stand,<br />
+                    When heeded they will purify all others in their band.<br />
+                    Exchanging all else in this world to show how Good can be,<br />
+                    The Paladin of Falode is quite good company.<br />
+                    — <cite>The Humble Oath</cite></p>
+                </blockquote>
+                <ol>
+                  <li>Cannot openly pursue greatness for greatness’s sake.</li>
+                  <li>Must always respect and show their colors and their arms.</li>
+                  <li>When injustice or exploitation shows itself, intervene.</li>
+                  <li>Be wary of any new doctrine, group, or organization.</li>
+                  <li>Cannot <em>be seen</em> to be impure, dishonorable, or criminal.</li>
+                  <li>Must respect all related to them, if at all possible.</li>
+                  <li>If possible, must answer the call of any superior personage.</li>
+                  <li>Responsible for the actions of all party members.</li>
+                  <li>Reject anything tainted by dishonor.</li>
+                  <li>Follow appropriate social ettiquette.</li>
+                </ol>
+              </section>
+              <section>
+                <h3>Knight Code</h3>
+                <blockquote>
+                  <p>The Knights of Falode all prefer to affect real change<br />
+                    Even if the consequences turn themselves estranged<br />
+                    When doing Good it is important to remain impartial<br />
+                    The law is right and wrong at times, true justice is oft martial.<br />
+                    We’re soldiers first, of sword and helm, and so we do not lead,<br />
+                    We’re soldiers first, with sword and helm, so that we do not bleed.<br />
+                    In disagreement, duels all must be held up to our eyes,<br />
+                    And none might die or lose a limb because one of us lies.<br />
+                    When we begin a task or quest we always see it through,<br />
+                    Because the Knight of Falode always parcels what is due.<br />
+                    — <cite>The Egalitarian Creed</cite></p>
+                </blockquote>
+                <ol>
+                  <li>Cannot sit idle when action could effect change.</li>
+                  <li>Ignore what the public thinks of Your actions.</li>
+                  <li>Remain neutral towards others in disagreement.</li>
+                  <li>The law is sometimes wrong. Use duels to suspend it if needed.</li>
+                  <li>Do not strike out alone. Find a cause and join it.</li>
+                  <li>Never be completely disarmed or unprotected.</li>
+                  <li>If a duel is imminent, oversee it above anything else.</li>
+                  <li>No falsehoods, lying, or cheating.</li>
+                  <li>See everything through to the end, win or lose.</li>
+                  <li>Never hold back the truth, nor judgement.</li>
+                </ol>
+              </section>
+              <section>
+                <h3>Templar Code</h3>
+                <blockquote>
+                  <p>A Templar of Falode upholds the letter of the laws,<br />
+                    Dissent is meant to circumvent the ease of life they cause.<br />
+                    Their word and deed and oath and creed, the Templar has refined,<br />
+                    In words and deeds, and for all creeds, the Templar is supine.<br />
+                    A Templar first and foremost takes their rulings from the crown,<br />
+                    But Templars help the people make those rulings become sound.<br />
+                    And when it comes to pass that they must take up arms again,<br />
+                    A Templar reacts fast only for honorable ken.<br />
+                    They might patrol the banty roosts of Falode’s lowest day<br />
+                    But Templars make the words read right. All else they cast away.<br />
+                    — <cite>The Gallant Mandate</cite></p>
+                </blockquote>
+                <ol>
+                  <li>Follow the Law of Falode, as it is actually written.</li>
+                  <li>Don’t associate with revolutionaries or activists.</li>
+                  <li>Act, speak, swear, and live delibrately.</li>
+                  <li>Remain unbiased towards others’ actions and words.</li>
+                  <li>Do not break the law, or Your word.</li>
+                  <li>Find a way to work inside the law, as written.</li>
+                  <li>Do not arm Yourself when unnecessary.</li>
+                  <li>You need not remain unbiased or helpful towards criminals.</li>
+                  <li>Put Yourself among those that might need Your help.</li>
+                  <li>Nothing is more important than the rules.</li>
+                </ol>
+              </section>
+            </article>
+          </div>
+        </main>
+      #+end_src
+**** Falodian Pantheon
+     #+begin_src html :tangle public/falode/pantheon/index.html :noweb yes
+       <<site-pre(title="cdr255.com - Falodian Pantheon",canonical="https://cdr255.com/falode/pantheon/")>>
+       <<site-header>>
+       <<falodian-pantheon-content>>
+       <<site-footer>>
+       <<site-post>>
+     #+end_src
+***** Falodian Pantheon Content
+      #+name: falodian-pantheon-content
+      #+begin_src html
+        <main>
+          <div class="underlay">
+            <aside>
+              <h1>Falodian Pantheon</h1>
+              <p>This is the officially recognized pantheon for the Kingdom of Falode.</p>
+              <p>It is by no means exhaustive; Other Gods and Goddesses are worshipped
+                throughout the land, but are either too minor or too contrary to be
+                officially noted here yet. Every major metropolitan area in Falode is
+                required by Royal Law to have a shrine to each of these deities. Small
+                towns, of course, are not.</p>
+              <p>The Deities of the Falodian Pantheon form themselves into various groups.</p>
+              <p>Firstly, the Hierarchy: There were once only ten deities. Of these ten,
+                two stood up and took control: Alil and Jeha. They took up the cause
+                of defending the Fates. The others would defer to them, but keep their
+                own individuality for the most part, and became Beholden to the
+                Fates. Over time, various Children were born to them all: They became
+                the Children of the Fates.</p>
+              <p>Secondly, there are groupings based on Status and Culture: Gods and
+                Goddesses, first, to promote an easy way to divide the group. Then,
+                there were some who began work on some… questionable goals. These
+                became the Watched. The Shepards all took up a single race of mortal
+                and swore to guide them to success. And then, during the Great
+                Conflicts, there came two groups: The Structure, who wanted to create
+                an ordered, logical world… And the Freedom, who wanted to create a
+                chaotic, complex world.</p>
+            </aside>
+            <article class="pantheon-grid">
+              <section>
+                <h2>Hierarchy</h2>
+                <dl>
+                  <dt>Head of Fates</dt>
+                  <dd>Alil</dd>
+                  <dd>Jeha</dd>
+                  <dt>Beholden to Fates</dt>
+                  <dd>Akanindal</dd>
+                  <dd>Etor</dd>
+                  <dd>Medesa</dd>
+                  <dd>Mikha</dd>
+                  <dd>Modulo</dd>
+                  <dd>Sintheta</dd>
+                  <dd>Tehari</dd>
+                  <dd>Zoniana</dd>
+                  <dt>Children of Fates</dt>
+                  <dd>Agatamam</dd>
+                  <dd>Amazal</dd>
+                  <dd>Castisa</dd>
+                  <dd>Deja</dd>
+                  <dd>Gatu</dd>
+                  <dd>Gora</dd>
+                  <dd>Idwahnae</dd>
+                  <dd>Malilihara</dd>
+                  <dd>Saraph</dd>
+                  <dd>Satam</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Groupings</h2>
+                <dl>
+                  <dt>Gods</dt>
+                  <dd>Alil</dd>
+                  <dd>Akanindal</dd>
+                  <dd>Etor</dd>
+                  <dd>Modulo</dd>
+                  <dd>Tehari</dd>
+                  <dd>Agatamam</dd>
+                  <dd>Amazal</dd>
+                  <dd>Gatu</dd>
+                  <dd>Saraph</dd>
+                  <dd>Satam</dd>
+                  <dt>Goddesses</dt>
+                  <dd>Jeha</dd>
+                  <dd>Medesa</dd>
+                  <dd>Mikha</dd>
+                  <dd>Sintheta</dd>
+                  <dd>Zoniana</dd>
+                  <dd>Castisa</dd>
+                  <dd>Deja</dd>
+                  <dd>Gora</dd>
+                  <dd>Idwahnae</dd>
+                  <dd>Malilihara</dd>
+                  <dt>Watched</dt>
+                  <dd>Etor</dd>
+                  <dd>Sintheta</dd>
+                  <dd>Gatu</dd>
+                  <dd>Gora</dd>
+                  <dt>Shephards</dt>
+                  <dd>Tehari</dd>
+                  <dd>Agatamam</dd>
+                  <dd>Satam</dd>
+                  <dd>Deja</dd>
+                  <dd>Idwahnae</dd>
+                  <dt>Structure</dt>
+                  <dd>Alil</dd>
+                  <dd>Tehari</dd>
+                  <dd>Mikha</dd>
+                  <dd>Gatu</dd>
+                  <dd>Akanindal</dd>
+                  <dd>Sintheta</dd>
+                  <dt>Freedom</dt>
+                  <dd>Jeha</dd>
+                  <dd>Etor</dd>
+                  <dd>Zoniana</dd>
+                  <dd>Gora</dd>
+                  <dd>Medesa</dd>
+                  <dd>Modulo</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Alil</h2>
+                <p>One of the Leaders of the Fates, Alil is a shining beacon of order and
+                  virtue amongst all others. Known for being seen as, at all costs,
+                  honorable and strong, he is the pinnacle of Structure in the Falodian
+                  Pantheon. He represents Civilization, Unyielding Honor, Absolute
+                  Truth, and Strength of Character.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Gods</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Sun and Cloud</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Sun</dd>
+                  <dd>Order</dd>
+                  <dd>Virtue</dd>
+                  <dd>Strength</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Jeha</h2>
+                <p>One of the Head of the Fates, Jeha is an ever-present guardian of
+                  creation and mortality in all of its forms. Known for being
+                  spontaneous to a fault, she is the pinnacle of Freedom in the Falodian
+                  Pantheon. She represents Imperfect Creation, Adaptive Reasoning,
+                  Intrinsic Understanding, and Mortality.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Goddesses</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Moon and Star</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Moon</dd>
+                  <dd>Chaos</dd>
+                  <dd>Creation</dd>
+                  <dd>Charisma</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Akanindal</h2>
+                <p>One of those Beholden to the Fates, Akanindal is a spreader of
+                  knowledge and truth to all those who seek it. Known for being crass
+                  and blunt, he is incapable of concealing the truth, no matter how
+                  badly it hurts. He represents Useful Technology, Well-known Secrets,
+                  and Being True to Yourself.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Fire</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Burning Book</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Fire</dd>
+                  <dd>Knowledge</dd>
+                  <dd>Vice</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Tehari</h2>
+                <p>One of those Beholden to the Fates, Tehari is the guardian of the
+                  Kingdom of Falode. Known for his bent towards protecting and aiding
+                  others, he embodies everything Falode aspires towards. He represents
+                  Far-Reaching Change, Unity in Diversity, and Humble Service.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Falode</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Blooming Shield</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Air</dd>
+                  <dd>Plants</dd>
+                  <dd>Falodians</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Modulo</h2>
+                <p>One of those Beholden to the Fates, Modulo is obsessed with finding
+                  valuable items and tools. Known for his lack of respect for personal
+                  property, nothing is beyond his reach, should he decide that he has a
+                  need for it. He represents Addressing Necessity, Borrowing Without
+                  Asking, and Discovering Secrets.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Stolen Goods</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Shining Chest</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Cold</dd>
+                  <dd>Magic</dd>
+                  <dd>Thievery</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Etor</h2>
+                <p>One of those Beholden to the Fates, Etor values Individuality above
+                  all else. Known for once being a mortal who was uplifted to Godhood,
+                  he feels all should be allowed to live as they please- to hell with
+                  the consequences. He represents Imperfection, Forgiveness, and Nature.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Individuals</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Broken Ring</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Chaos</dd>
+                  <dd>Animals</dd>
+                  <dd>Plants</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Zoniana</h2>
+                <p>One of those Beholden to the Fates, Zoniana embodies the spirit of
+                  life, love, and creation. Known for her role as midwife to the others,
+                  she holds children and family in great esteem. She represents
+                  Bountiful Fertility, Newfound Love, and Family.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Life</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Sprouting Babe</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Earth</dd>
+                  <dd>Love</dd>
+                  <dd>Hearth/Life</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Medesa</h2>
+                <p>One of those Beholden to the Fates, Medesa promotes health within
+                  ourselves, our community, and our environment. Known for her
+                  fairminded kindness towards all who seek her aid, she is nontheless
+                  blind. She represents Natural Harmony, Long-term Healing, and Charity
+                  to Others.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Deltas</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Delta-fed River</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Water</dd>
+                  <dd>Animals</dd>
+                  <dd>Healing</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Sintheta</h2>
+                <p>One of those Beholden to the Fates, Sintheta embodies the end of all
+                  things. Known for her patience and wit, she (among others) introduced
+                  the idea of Entropy into the mortal world. She represents Natural
+                  Decay, White Lies, and Gambling.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Death</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Beskulled Dice</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Cold</dd>
+                  <dd>Trickery</dd>
+                  <dd>Death</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Mikha</h2>
+                <p>One of those Beholden to the Fates, Mikha advocates for justice
+                  towards all. Known for her fiery heart and sharp tongue, she is quick
+                  to anger and quicker to get to the bottom of any issue. She represents
+                  Absolute Justice, Level Playing Fields, and Retribution.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Justice</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Sword and Helm</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Order</dd>
+                  <dd>Protection</dd>
+                  <dd>War</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Amazal</h2>
+                <p>One of the Children of the Fates, Amazal is fascinated with overcoming
+                  challenges. Known for his penchant towards stacking odds against
+                  himself, he is tougher than most in body and mind. He represents
+                  Storms and Natural Hardship.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Weather</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Raincloud</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Constitution</dd>
+                  <dd>Weather</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Saraph</h2>
+                <p>One of the Children of the Fates, Saraph is the ultimate romantic
+                  showoff. Known for his skill with a pen and his hands, tales of his
+                  past romances with all manner of partners are where he draws his
+                  teachings from. He represents Graceful Stunts and Passionate Romance.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Romance</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Rose and Note</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Dexterity</dd>
+                  <dd>Love</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Satam</h2>
+                <p>One of the Children of the Fates, Satam is the guardian of the
+                  Dorsht. Known for his paintings and artful eye, he can derive truth
+                  from seemingly meaningless symbolism surrounding a situation. He
+                  represents Careful Attention to Detail and Creative Symbolism.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Dorsht</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Paintbrush</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Dorsht</dd>
+                  <dd>Painting</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Agatamam</h2>
+                <p>One of the Children of the Fates, Agatamam is the guardian of the
+                  Viliniti. Known for his many pets (and, as he puts it, feral friends),
+                  he shares a connection with each and every animal in the world. He
+                  represents Understanding Without Words and Domesticating Animals.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Viliniti</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Necklace</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Viliniti</dd>
+                  <dd>Animals</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Gatu</h2>
+                <p>One of the Children of the Fates, Gatu is one half of the team working
+                  to undo Sintheta’s gift of Entropy. Known for his restless and
+                  repugnant research, he refuses to cease his studies for any reason-
+                  including ethics and laws. He represents Sacrifice and Obsession.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>God of Forbidden Knowledge</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Skull Book</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Undeath</dd>
+                  <dd>Knowledge</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Malilihara</h2>
+                <p>One of the Children of the Fates, Malilihara is an energetic engineer
+                  and researcher remembered for her gifts to ancient Falode. Known for
+                  her obsession with discovering new facts about herself and others. She
+                  represents Unashamed Experimentation and Useful Knowledge.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Learning</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Quill and Scroll</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Intelligence</dd>
+                  <dd>Knowledge</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Castisa</h2>
+                <p>One of the Children of the Fates, Castisa was a quietly observing
+                  third party in most of the Great Conflicts. Known for her devotion to
+                  balance in all things, she is much more likely to listen than she is
+                  to talk. She represents Patient Observation and Universal Balance.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Nature</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Campher Tree</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Wisdom</dd>
+                  <dd>Nature</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Deja</h2>
+                <p>One of the Children of the Fates, Deja is the guardian of the
+                  Khula. Known for her skilled tongue, she has made many a deal both on
+                  the mortal plane and in many others. She represents Openness to Change
+                  and Recognition of Value.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Khula</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Shining Cane</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Khula</dd>
+                  <dd>Trade</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Idwahnae</h2>
+                <p>One of the Children of the Fates, Idwahnae is the guardian of the
+                  Ehdrin. Known for her black-and-white view of the world, she marks the
+                  truth of the ages in tatoos on her skin. She represents Permanence and
+                  Defined Boundaries.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Ehdrin</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Inked Needle</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Ehdrin</dd>
+                  <dd>Tattooing</dd>
+                </dl>
+              </section>
+              <section>
+                <h2>Gora</h2>
+                <p>One of the Children of the Fates, Gora is one half of the group trying
+                  to undo Sintheta’s gift of Entropy. Known for refusing to accept
+                  things as they are, she tirelessly works to reshape things in her own
+                  image as best she can. She represents Selfish Goals and Stubborn
+                  Persistance.</p>
+                <dl>
+                  <dt>Title:</dt>
+                  <dd>Goddess of Refusal</dd>
+                  <dt>Symbol:</dt>
+                  <dd>Skull Fist</dd>
+                  <dt>Aspects:</dt>
+                  <dd>Vice</dd>
+                  <dd>Undeath</dd>
+                </dl>
+              </section>
+            </article>
+          </div>
+        </main>
+      #+end_src
 *** Video Games
+    This section will be added when I have something to put here.
 *** TTRPG Logs
 *** Reviews
 ** Fiction
@@ -826,7 +1727,7 @@
         background-color: rgba(255, 255, 255, 0.1); }
     /* BREAK */
 
-    article {
+    .underlay {
         background-color: #FBF7F3;
         padding: 2em;
         padding-top: 0;
@@ -835,7 +1736,7 @@
         min-height: 25em;
         overflow: hidden;
     }
-    article h2 {
+    .underlay h2 {
         display: block;
         margin: 0 0 16px 0;
         font-size: 1.7em;
@@ -843,38 +1744,38 @@
         letter-spacing: -1px;
         color: #505050;
         background-color: inherit; }
-    article h2 a {
+    .underlay h2 a {
         font-weight: normal; }
-    article h3 {
+    .underlay h3 {
         margin: 0 0 5px 0;
         font-size: 1.4em;
         letter-spacing: -1px; }
-    article h4 {
+    .underlay h4 {
         background-color: #333;
         color: #CCC; }
-    article img {
+    .underlay img {
         max-width: 200px;
         border: 1px solid #a22; }
-    article ul {
+    .underlay ul {
         margin: 1em; }
-    article ol {
+    .underlay ol {
         margin: 1em; }
-    article dl {
+    .underlay dl {
         margin: 1em; }
-    article dt {
+    .underlay dt {
         font-weight: bold;
         margin-bottom: 1em; }
-    article dd {
+    .underlay dd {
         margin: 1em; }
-    article table {
+    .underlay table {
         display: table;
         max-width: 90%;
         margin-left: 0; }
-    article table td {
+    .underlay table td {
         display: table-cell; }
-    article table th {
+    .underlay table th {
         display: table-cell; }
-    article blockquote {
+    .underlay blockquote {
         font-family: "Montserrat", monospace;
         font-size: small;
         padding: 8px;
@@ -886,29 +1787,15 @@
         margin: auto;
         margin-top: 1em;
         margin-bottom: 1em;
-        line-height: 2em; }
-    #subcontent {
-        float: right;
-        width: 11em;
-        padding: 20px 20px 10px 0;
-        line-height: 1.4em; }
-    #subcontent a:hover {
-        text-decoration: underline; }
-    #subcontent h2 {
-        display: block;
-        margin: 0 0 15px 0;
-        font-size: 1.6em;
-        font-weight: normal;
-        text-align: left;
-        letter-spacing: -1px;
-        color: #505050;
-        background-color: inherit; }
-    #subcontent p {
-        margin: 0 0 1em 0;
-        font-size: 0.9em; }
-    #floatleft {
-        float: left;
-        margin-right: 1em; }
+        line-height: 2em;
+
+    }
+    .grid-by-3 {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-rows: 1fr 1fr;
+        grid-gap: 1em;
+    }
     footer {
         width: 40%;
         margin: auto;
