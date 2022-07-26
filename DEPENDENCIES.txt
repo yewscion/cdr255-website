@@ -1,0 +1,21 @@
+This file lists all of the technologies I use in this website.
+
+- CSS3
+- HTML5
+- Javascript
+- Ogg Vorbis
+- RFC 5988 favicons
+- RSS
+- SVG2
+
+Here are a few more tools I've used to make the site, at one point or another.
+
+- GNU Emacs
+- GNU Guile
+- GNU Lilypond
+- GNU Texinfo
+- Git
+- OpenJDK
+- SBCL
+
+Hope that helps!
