@@ -1,6 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,400;0,700;1,400;1,700&family=Press+Start+2P&display=swap');
 /* Colors -  DARK: #462700; LIGHT: #B9A89B; MID: #847467; POP: #2A6749; */
-html { background-color: #2A6749;
+html { background:
+           radial-gradient(circle at 0% 70%,
+                           #46270000 9px,
+                           #46270077 11px,
+                           #46270000 9px) 0px 2px,
+           radial-gradient(circle at 100% 100%,
+                           #46270000 9px,
+                           #46270022 11px,
+                           #46270000 9px),
+           radial-gradient(#B9A89B22 1px,
+                           #B9A89B00 2px,
+                           transparent 5px),
+           #2A6749;
+       background-size: 20px 20px;
        min-height: 100vh; }
 body { margin: 0 auto;
        font-family: 'Montserrat', serif;
@@ -15,7 +28,7 @@ body { margin: 0 auto;
            border: 1vh groove #847467; }
     header { display: flex; }
     header nav { width: 100%;
-        text-align: right; }
+                 text-align: right; }
     header nav ul { margin-bottom: 0; }
     header nav ul li a { display: block;
                          padding: 2em;
