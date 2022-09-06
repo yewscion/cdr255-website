@@ -1,0 +1,844 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>One to One, Many to One, and Many to Many</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+22SC-CSC300-1: Operating Systems and Architecture<br />
+Dr. Jonathan Vanover<br />
+2022-07-10
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">One to One, Many to One, and Many to Many</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-3"></a>
+
+
+<p>
+The task this paper seeks to complete is a recommendation for the upgrade of a computer laboratory from its current setup of individual workstations with one of three operating systems installed (IBM OS/2, Microsoft Windows NT, or Microsoft
+Windows 2000) that uses a one-to-one model of multi-threading to a setup utilizing current-day Operating Systems that support a model that same one-to-one model. This will better suit the use-case of a laboratory in an academic setting.
+</p>
+
+<p>
+This paper presents the case that the best path forward is to purchase a single powerful server that will run a Virtual Machine Manager that will allow students to run various distributions of the GNU/Linux operating system in a containerized, isolated
+virtual environment, and that the One-to-One module of multi-threading is both the most future-proof and the best decision economically for this use-case.
+</p>
+<h4 id="autosec-4">Initial Consideration of Obsolescence</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-4"></a>
+
+
+<p>
+Before outlining the entirety of this proposal, it is worth offering a word of caution to the operator of this laboratory: Regardless of the reaction to this recommendation, please upgrade to some sort of operating system that is actively maintained and
+supported. IBM’s OS/2 has been considered by IBM as target to move away from for over a decade (“Migration Station,” <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@IBM20100513">2010</a>), “Windows NT” was supplanted by Windows 2000 at the turn of the millennium (“Microsoft Renames
+Windows NT 5.0 Product Line to Windows 2000,” <a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@MS2014">2014</a>), and Windows 2000 has not had a active support since
+2010 (“Microsoft Product Lifecycle Search,” <a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@MS2013">2013</a>). From a maintainability perspective, it’s vital to keep
+systems updated with current security patches. It will also make the job of actually maintaining the lab much easier in the long run, as there will be more people familiar with operating system available—including a corporate help-desk that will be able to
+offer assistance, if needed.
+</p>
+<h4 id="autosec-5">Multi-threading Models</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-5"></a>
+
+
+<p>
+With the advent of multi-threaded computation, there came both user threads—which run above and independently of the kernel—and kernel threads—which are managed directly by the underlying operating system (Silberschatz et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Silberschatz2018c04">2018</a>, p. 166). However, both of these threads need to run on a CPU, and therefore must eventually
+be mapped into one unit so they can be processed. There are three common models for this.
+</p>
+<h5 id="autosec-6">Many to One</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-6"></a>
+
+
+<p>
+In the “Many to One” model of multi-threading multiple user threads are all mapped to a single kernel thread. This has the benefit of allowing all thread management to happen in user space, as opposed to needing the kernel to manage threads. This
+efficiency caused the Many to One model to develop a niche in the single-core CPU era. However, it comes with two major drawbacks: All user-space threads are halted if there is a blocking system call on the single kernel thread. And multi-core
+processors are not able to be utilized to their fullest extent in a Many to One model, because only a single user thread can access the kernel at a time (Silberschatz et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Silberschatz2018c04">2018</a>, Section 4.3.1).
+</p>
+<h5 id="autosec-7">One to One</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-7"></a>
+
+
+<p>
+The model currently in use in the lab for this project, a “One to One” relationship creates a kernel thread for each user thread, effectively ensuring each thread in user-space can always access the kernel, even when another process might be blocking it.
+This addresses both of the downsides in the Many to One model, but comes with another cost, albeit one rapidly becoming less and less severe: The One to One model creates the most kernel threads, as there will always be exactly the same number of
+kernel threads as there are user threads. This used to be much more problematic when processing resources were more limited, and so gave rise to the final model (Silberschatz et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Silberschatz2018c04">2018</a>, Section 4.3.2).
+</p>
+<h5 id="autosec-8">Many to Many</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-8"></a>
+
+
+<p>
+In the “Many to Many” model, user threads are multiplexed across a possibly smaller number of kernel threads, depending on the capabilities of the machine and the needs of the application. This sounds more complex than the two preceding examples
+because it is: There are a lot of variables in this process, and developers need to be aware of the relationships they can create on the machines their code will run on. However, this complexity solves all three of the above problems, as there will
+(theoretically) always be a reasonable number of kernel threads, and user threads are mapped to them based on need and availability, dynamically over time (Silberschatz et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Silberschatz2018c04">2018</a>, Section 4.3.3).
+</p>
+<h5 id="autosec-9">Staying One to One</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-9"></a>
+
+
+<p>
+Though alternatives exist, the “One to One” model is the clear winner from a pragmatic standpoint. First and foremost, in 2022 its drawback is nearly trivial: There are enough computing resources in the average machine, be it virtual or physical, to not
+have to worry about accidentally creating too many kernel threads. And secondly, the most common end-user operating systems—GNU/Linux, Microsoft Windows, and Mac OS/X—all use a One to One model (Silberschatz et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Silberschatz2018c04">2018</a>, p. 167).
+</p>
+
+<p>
+Moving to one of the other models effectively means becoming nonstandard, and that will only make things more complicated for the end users.
+</p>
+<h4 id="autosec-10">Operating System</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-10"></a>
+
+
+<p>
+Knowing that we are staying with a One to One model of multi-threading, the next question naturally is which operating system to choose for the server, and which operating systems to provide to the students.
+</p>
+
+<p>
+For the server, there is an argument that it doesn’t really matter what operating system is installed, passed a certain point of usability (Moss, <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Moss2008">2008</a>, p. 92). Indeed, since it will be largely serving virtual machines running various operating systems anyway,
+perhaps from a user standpoint it does not matter: a user might use any program inside of any operating system, whenever they like (Larkin, <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Larkin2006">2006</a>).
+</p>
+
+<p>
+However, from a system administration point of view, the clear choice for a recommendation is GNU/Linux.
+</p>
+<h5 id="autosec-11">Security by Obscurity</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-11"></a>
+
+
+<p>
+From the standpoint of security, there is at first little doubt that GNU/Linux and Microsoft Windows are fairly equal: Both are well known operating systems with large user bases that receive regular updates and have lots of people working on them.
+However, GNU/Linux edges out Microsoft Windows in two crucial areas: It’s generality, and it’s obfuscatability.
+</p>
+
+<p>
+There is a common misconception that it’s possible to increase security by using lesser-known systems, sometimes referred to using the phrase “Security through Obscurity”, and there is a common axiom called Kerckhoffs’ Principle that asserts its
+falsehood. As shown by Pavlovic (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Pavlovic2011">2011</a>), Kerckhoffs’ Principle is only broken once the model of security
+shifts from one of imperfect information to one of incomplete information (p. 134): That is, security is about generalization, misdirection, and obfuscation more than about ensuring an attacker’s unfamiliarity with the workings of a specific system.
+</p>
+
+<p>
+If generalization is important, it can be said that any POSIX-compliant operating system might be secure—and even more-so GNU/Linux, which follows a standardized directory structure at the core, on which many services might add or run on top of
+(LSB Workgroup, <a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@LSB2015">2015</a>, p. 1). And as for obfuscation: Any technophile who has engaged in “Distro
+Hopping”—moving from one distribution of GNU/Linux to another, for the experience and novelty—can attest to the fact that each distribution behaves slightly differently, especially considering the variety of setups available for GNU/Linux and the
+speed with which software in its ecosystem is updated.
+</p>
+
+<p>
+If GNU/Linux is the subversive bazaar as mentioned by , then Windows is the classic Cathedral in comparison: Proprietary, slow to change, and “official” in a way that makes its security flaws inobscure.
+</p>
+<h5 id="autosec-12">Migration</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-12"></a>
+
+
+<p>
+That said, all existing data will need to be ported over to a different filesystem, as NTFS—which is the filesystem all of the data is assumedly stored in currently—still lacks perfect support in GNU/Linux, with various warnings about data corruption still
+whispered around its recommended use (“NTFS-3G,” <a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@ArchWiki2022">2022</a>). From an end-user perspective, however,
+file-system choice is largely opaque, unless less common options are chosen. A strong recommendation would be EXT4, which is the latest iteration on the extended filesystem, and can handle very large filesystems (Team, <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Kernel2022ext4">2022</a>).
+</p>
+
+<p>
+Large filesystems will be very important, as this system is primarily going to be serving users entire virtual machines.
+</p>
+<h4 id="autosec-13">Virtualization</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-13"></a>
+
+
+<p>
+A cluster of servers—or for smaller applications such as this project, a single server acting as the sole host—running clusters of virtual machines provides a few widely-accepted benefits over running on real hardware: New Desktops or Servers can be
+easily provisioned in seconds, those same virtual machines can easily be moved to new hardware as it becomes necessary or desirable, students or professors can easily—and without needing assistance or approval from anyone—use the system, even if
+they need to provision an entirely new machine, and none of the above costs any more money than the original setup and running costs for the system as a whole (Yuan et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Yuan2013">2013</a>, p. 77).
+</p>
+<h5 id="autosec-14">Virtual Machines</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-14"></a>
+
+
+<p>
+When outlining the thought process behind developing Clojure, Hickey (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Hickey2015">2015</a>) claimed that virtual
+machines, and not operating systems running on bare-metal hardware—were the platforms of the future. And when defining an environment to work in, Bellum and Linvega (<a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Bellum2022">2022</a>) chose to implement a small virtual machine for ease of implementation and portability. It is clear that
+Virtual Machines offer some notable benefits over Operating Systems on bare-metal hardware.
+</p>
+
+<p>
+Modern computers use an enormous number of layers of abstraction to provide the similar experience users expect across constantly varying hardware. As referenced by Munroe (<a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Munroe2009">2009</a>), even something a deceptively simple as watching a video of a cat involves so many layers it is hard to
+count. Virtual Machines abstract most of this away, providing a consistent experience regardless of hardware, and allowing specifics—like peripherals and storage drives—to be changed at will. This provides a safe and customizable environment for any
+sort of work, as noted by Schocken (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Schocken2009">2009</a>)at the end of their study: Modular components surrounding a
+virtual machine allow them to be reused and reworked for subsets of the original goal (p. 209).
+</p>
+<h5 id="autosec-15">The Hypervisor</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-15"></a>
+
+
+<p>
+Virtual Machines need a Hypervisor to provision them.
+</p>
+
+<p>
+For this, as the system is already running GNU/Linux, the simplest recommendation is the Libvirt Virtualization API: An API that will support multiple varieties of Virtualization, including QEMU, Xen, LXC, and KVM (“Libvirt Virtualization API,” <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Libvirt2022">2022</a>). This system will not be using VMM, it is not using Windows as the host OS.
+</p>
+
+<p>
+The typical downside mentioned when talking about Hypervisors is processing overhead (Dai et al., <a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Dai2013">2013</a>,
+p. 111). As this is a computing laboratory and not a business environment, this is of little concern here: Quotas can be put in place to ensure no one person monopolizes the resources, if it becomes necessary.
+</p>
+<h4 id="autosec-16">Storage</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-16"></a>
+
+
+<p>
+But what hardware is best, to store the virtual machines and user data—after all, a system like this would be of little use if everything was lost when the machine shut down.
+</p>
+<h5 id="autosec-17">Hardware Recommendations</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-17"></a>
+
+
+<p>
+One upside to using GNU/Linux is the breadth of compatible hardware available: Long gone are the days of wondering if a machine will run a common variety of GNU/Linux. Therefore, the only considerations needed for hardware are cost and power. In
+particular, the KVM module of the Linux Kernel allows for any CPU with virtualization capabilities to directly be used for this purpose.
+</p>
+
+<p>
+Therefore, any strong server capable of virtualization and of running GNU/Linux will do.
+</p>
+<h5 id="autosec-18">Virtualized Storage</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-18"></a>
+
+
+<p>
+According to Yuan et al. (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Yuan2013">2013</a>), the shift toward virtualizing laboratories and data centers in both business
+and academia has largely been motivated by a desire to lower costs in general, but has had the unintended consequence of making such installations much more environmentally friendly as well (p. 76-77). It is little wonder then that the recommendation
+would be to utilize virtualized storage as well, as the costs and impact on the environment will be made much lower through this practice.
+</p>
+
+<p>
+With this in mind and the use of the EXT4 filesystem as mentioned above, storage can easily be expanded and contracted per user as needed, and stored as files on a massive partition of the hard drive. These can be backed up offline on a regular schedule.
+</p>
+<h5 id="autosec-19">RAID</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-19"></a>
+
+
+<p>
+The concept of a “Redundant Array of Inexpensive Disks” has existed for a long time. With the advent of the cloud, less focus has been placed on this kind of storage than in past years&#x2026;However, this project has been entirely local up to this point,
+and to continue that feature storage will be local as well.
+</p>
+
+<p>
+When discussing the different varieties of RAID setup, there are generally a total of 7 RAID “levels” to consider—interestingly, the two at the extremes (RAID 0 and RAID 6) were not part of the original set of RAID organizations (Chen et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Chen1994">1994</a>, p. 152).
+</p>
+
+<p>
+It’s wise to immediately remove three levels from consideration: RAID 0, which is non-redundant and therefore no safer than a raw Disk Array<sup>1</sup> and both RAID 2 and RAID 4, as while they are useful as conceptual stepping-stones they are
+strictly inferior to other choices: RAID 2 makes inefficient use of hardware with its disk-array-for-redundant-parity approach, and RAID 4 create a bottleneck out of its single parity disk (Chen et al., <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Chen1994">1994</a>, pp. 153–154). Following this, removing RAID 1 and RAID 3 comes naturally, as neither of these are
+particularly suited to a virtual machine based laboratory system.
+</p>
+
+<p>
+This leaves RAID 5 and RAID 6.
+</p>
+
+<p>
+<em>RAID 5</em> is useful specifically when <em>performance</em> is the highest priority: In RAID 5, both data and parity are stored across disks in uniformly sized blocks. The effective capacity of one disk is dedicated to “check” blocks, which can
+be read in order to restore blocks from a failed disk—but as these are uniformly spread throughout all of the disks, no one disk ever taxed too heavily by the system (Thomasian &amp; Blaum, <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Thomasian2009">2009</a>, 7:8). However, RAID 5 is still only 1DFT: If two or more disks fail, data is lost. This is a very
+popular arrangement in real-life, because it allows for both <em>reliability</em> and <em>performance</em> improvements: It is used in myriad cases, and might be thought of as the “default” RAID level.
+</p>
+
+<p>
+<em>RAID 6</em> is useful specifically when an increase in <em>reliability</em> is worth a small hit to <em>performance</em>: In RAID 6, everything is exactly the same as in RAID 5, except RAID 6 devotes the effective capacity of <em>two</em>
+disks to “check” blocks (Thomasian &amp; Blaum, <a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Thomasian2009">2009</a>, 7:8). It is therefore 2DFT. This difference
+makes it the clear choice of the basic RAID levels for data retention, and if feasible from a monetary standpoint, is likely the “best” general-use single RAID level.
+</p>
+
+<p>
+If it is within budget, RAID 6 is definitely worth going for. Otherwise, stick with RAID 5.
+</p>
+<div class="footnotes" >
+<p>
+<sup>1</sup>&nbsp;RAID 0 is actually significantly less safe than a single disk, as noted by Chen et al. (<a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Chen1994">1994</a>): an <em>N</em>-disk RAID0 array is <em>N</em> times more likely to fail than a single disk—or put
+another way, RAID0 divides the longevity of Your storage by the number of disks (p. 147)!
+</p>
+
+</div>
+<h4 id="autosec-21">Network Security</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-21"></a>
+
+
+<p>
+A final point of consideration should be security: If a bad actor were to access the system and the files stored within it, they could delete everything, siphon data from the students, or even use the system as a base from which to attack others. We will
+protect against this by following the recommendations of Popa (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Popa2022">2022</a>), by combining hardware and software
+solutions to ensure the system remains accessible to those who are meant to use it, and inaccessible to those who are not.
+</p>
+<h5 id="autosec-22">CIA</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-22"></a>
+
+
+<p>
+As Yampolskiy et al. (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Yampolskiy2021">2021</a>) asserted in their discussions of a security model for Additive
+Manufacturing, the traditional model of network security can be broken into three pieces: Confidentiality, Integrity, and Availability . <em>Confidentiality</em> is broken when outside access to private information is made. <em>Integrity</em> is
+broken when private information is altered. And <em>Availability</em> is broken when private information is prevented from being delivered to its recipient (p. 4).
+</p>
+
+<p>
+Each one of these must be considered individually, as any of these breaches occurring would undermine the integrity of the system, and therefore on the work being done within it. However, with a proper application of hardware and software (and a
+modicum of user training) it’s possible to ensure no data is visible outside of those intended recipients of it.
+</p>
+<h5 id="autosec-23">An Unsolved Problem</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-23"></a>
+
+
+<p>
+During their recent Webinar entitled “Secure Computation in Practice”, Popa (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Popa2022">2022</a>) stated there was a gap
+between two separate, relatively secure areas in common networked computation: The two commonly protected areas are “in transit” (while uploading/downloading the data), and “at rest” (while storing the data). In between these, however, there is a
+period where the <em>unencrypted</em> data is “in use” (being transformed via computation) in the memory of the server (&nbsp;00:08:01).
+</p>
+
+<p>
+This is a major attack vector that still has (seemingly) no good solution is to breach the security of a server responsible for performing calculations with some sensitive data and viewing the data as it changes in memory. Using this sort of attack vector,
+around 533 million (533,000,000) user records were compromised from Facebook.com’s servers in 2021 alone (Popa, <a
+href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Popa2022">2022</a>, &nbsp;00:05:52). They go on to propose a combination of hardware enclaves—where there is effectively a
+gateway-encryption-module in between the processor and memory—and public key cryptography—so multiple people can access and decrypt the encrypted data—that will allow the data to stay encrypted the entire time.
+</p>
+<h5 id="autosec-24">Public Key Cryptography</h5>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-24"></a>
+
+
+<p>
+And on the software side, Public Key Cryptography will be the answer: If each user generates such a key on first login to the system, and all of their data is encrypted with this key, then it will remain private while not in use or while in transit. The only
+time the data would be accessible unencrypted is while it is in use—and while Popa (<a href="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many.html#LWR-ht-cite.0@Popa2022">2022</a>) has outlined a
+solution, that solution is still being worked on. For now, this less than perfect solution will have to suffice.
+</p>
+<h4 id="autosec-25">Conclusion</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-25"></a>
+
+
+<p>
+As has been outlined, this system will update the computer lab to modern standards, as well as provide a cost-effective and easy-to-maintain solution for many years to come. Using a Linux Host on a server running RAID 6 with a hardware enclave, a
+public key cryptography system, and virtualized storage that is regularly backed up to serve Linux and Windows VMs to those who need them without the need for new hardware provisioning is the clear best path forward for this laboratory.
+</p>
+<h4 id="autosec-26">References</h4>
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autopage-26"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Bellum2022"></a>
+<p>
+Bellum, R., &amp; Linvega, D. L. (2022, May 7). <em>Uxn design</em>. Hundredrabbits Collective. Retrieved July 8, 2022, from <a href="https://100r.co/site/uxn_design.html" target="_blank"
+>https://100r.co/site/uxn_design.html</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Chen1994"></a>
+<p>
+Chen, P. M., Lee, E. K., Gibson, G. A., Katz, R. H., &amp; Patterson, D. A. (1994). Raid: High-performance, reliable secondary storage. <em>ACM Computing Surveys</em>, <em>26</em>(2), 145–185. <a
+href="https://doi.org/10.1145/176979.176981" target="_blank" >https://doi.org/10.1145/176979.176981</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Dai2013"></a>
+<p>
+Dai, Y., Qi, Y., Ren, J., Shi, Y., Wang, X., &amp; Yu, X. (2013). A lightweight VMM on many core for high performance computing. <em>Proceedings of the 9th ACM SIGPLAN/SIGOPS international conference on Virtual execution environments - VEE
+’13</em>. <a href="https://doi.org/10.1145/2451512.2451535" target="_blank" >https://doi.org/10.1145/2451512.2451535</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Hickey2015"></a>
+<p>
+Hickey, R. (2015, January 1). Clojure - rationale (A. Miller, Ed.). <em>Cognitect, Inc</em>. Retrieved January 28, 2022, from <a href="https://clojure.org/about/rationale" target="_blank" >https://clojure.org/about/rationale</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Larkin2006"></a>
+<p>
+Larkin, E. (2006). The OS wars. <em>PC World</em>, <em>24</em>(11), 112.
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Libvirt2022"></a>
+<p>
+<em>Libvirt virtualization API</em>. (2022, July 10). Libvirt Project. Retrieved July 10, 2022, from <a href="https://libvirt.org/" target="_blank" >https://libvirt.org/</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@LSB2015"></a>
+<p>
+LSB Workgroup. (2015, March 19). <em>Filesystem hierarchy standard</em> (standard). The Linux Foundation. Retrieved July 4, 2022, from <a href="https://refspecs.linuxfoundation.org/fhs.shtml" target="_blank"
+>https://refspecs.linuxfoundation.org/fhs.shtml</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@MS2013"></a>
+<p>
+<em>Microsoft product lifecycle search</em>. (2013, April 7). Microsoft Corporation. Retrieved July 10, 2022, from <a
+href="https://web.archive.org/web/20130407031934/http://support.microsoft.com/lifecycle/search/?sort=PN&alpha=Windows+2000&Filter=FilterNO" target="_blank"
+>https://web.archive.org/web/20130407031934/http://support.microsoft.com/lifecycle/search/?sort=PN&alpha=Windows+2000&Filter=FilterNO</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@MS2014"></a>
+<p>
+<em>Microsoft renames windows NT 5.0 product line to windows 2000: Signals evolution of windows NT technology into mainstream</em>. (2014, June 10). Microsoft Corporation. Retrieved July 10, 2022, from <a
+href="http://web.archive.org/web/20140610224640/http://www.microsoft.com/en-us/news/press/1998/oct98/nt5.aspx" target="_blank"
+>http://web.archive.org/web/20140610224640/http://www.microsoft.com/en-us/news/press/1998/oct98/nt5.aspx</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@IBM20100513"></a>
+<p>
+<em>Migration station: Linux track</em>. (2010, May 13). International Business Machines Corporation (IBM). Retrieved July 10, 2022, from <a
+href="https://web.archive.org/web/20100513182513/http://www.ibm.com/developerworks/ondemand/migrate/linux.html#6" target="_blank"
+>https://web.archive.org/web/20100513182513/http://www.ibm.com/developerworks/ondemand/migrate/linux.html#6</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Moss2008"></a>
+<p>
+Moss, J. L. (2008). Does which operating system you choose matter? <em>Security Distributing and Marketing</em>, <em>38</em>(6), 92–96.
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Munroe2009"></a>
+<p>
+Munroe, R. (2009, December 16). <em>Abstraction</em> [Webcomic; XKCD #676]. Retrieved February 27, 2022, from <a href="https://xkcd.com/676" target="_blank" >https://xkcd.com/676</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@ArchWiki2022"></a>
+<p>
+<em>Ntfs-3g</em>. (2022). The Arch Linux Wiki. Retrieved July 10, 2022, from <a href="https://wiki.archlinux.org/title/NTFS-3G" target="_blank" >https://wiki.archlinux.org/title/NTFS-3G</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Pavlovic2011"></a>
+<p>
+Pavlovic, D. (2011, September 11). Gaming security by obscurity. In K. Beznosov (Ed.), <em>NSPW ’11: Proceedings of the 2011 new security paradigms workshop</em> (pp. 125–140). Association for Computing Machinery (ACM). <a
+href="https://doi.org/10.1145/2073276.2073289" target="_blank" >https://doi.org/10.1145/2073276.2073289</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Popa2022"></a>
+<p>
+Popa, R. A. (2022, June 30). <em>Secure computation in practice</em> (N. Crooks, Ed.) [Video]. Association for Computing Machinery (ACM). Retrieved June 30, 2022, from <a
+href="https://acm-org.zoom.us/rec/play/lM1lHpHhkk0eaVu_s58AGMzlfjsVcTLvlZwV8Bwe4xBcT-BykiBb61O2I3nuNLJbzh_76-tZEoPcjw.PIESKFlYsOgaDPVp" target="_blank"
+>https://acm-org.zoom.us/rec/play/lM1lHpHhkk0eaVu_s58AGMzlfjsVcTLvlZwV8Bwe4xBcT-BykiBb61O2I3nuNLJbzh_76-tZEoPcjw.PIESKFlYsOgaDPVp</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Raymond2002"></a>
+<p>
+Raymond, E. S. (2002, August 2). <em>The cathedral and the bazaar</em>. Retrieved July 10, 2022, from <a href="http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/" target="_blank"
+>http://www.catb.org/~esr/writings/cathedral-bazaar/cathedral-bazaar/</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Schocken2009"></a>
+<p>
+Schocken, S. (2009–July 9). Virtual machines: Abstraction and implementation (D. Hemmendinger, Ed.), 203–207. <a href="https://doi.org/10.1145/1562877.1562943" target="_blank" >https://doi.org/10.1145/1562877.1562943</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Silberschatz2018c04"></a>
+<p>
+Silberschatz, A., Galvin, P. B., &amp; Gagne, G. (2018, May 4). Threads and concurrency. In D. Fowley, R. Dannelly, C. Nelson, K. Santor, &amp; A. Pham (Eds.), <em>Operating system concepts</em> (10th&nbsp;ed., pp. 159–198). Wiley. <a
+href="https://isbnsearch.org/isbn/9781119320913" target="_blank" >https://isbnsearch.org/isbn/9781119320913</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Kernel2022ext4"></a>
+<p>
+Team, L. K. (2022, July 10). <em>Ext4 filesystem</em>. Retrieved July 10, 2022, from <a href="https://www.kernel.org/doc/Documentation/filesystems/ext4.txt" target="_blank"
+>https://www.kernel.org/doc/Documentation/filesystems/ext4.txt</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Thomasian2009"></a>
+<p>
+Thomasian, A., &amp; Blaum, M. (2009). Higher reliability redundant disk arrays: Organization, operation, and coding (S. P. Rajan, Ed.). <em>ACM Transactions on Storage</em>, <em>5</em>(3), 7:1–7:59. <a
+href="https://doi.org/10.1145/1629075.1629076" target="_blank" >https://doi.org/10.1145/1629075.1629076</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Yampolskiy2021"></a>
+<p>
+Yampolskiy, M., Gatlin, J., &amp; Yung, M. (2021). Myths and misconceptions in additive manufacturing security: Deficiencies of the cia triad. <em>AMSec ’21: Proceedings of the 2021 Workshop on Additive Manufacturing (3D Printing)
+Security</em>, 3–9. <a href="https://doi.org/10.1145/3462223.3485618" target="_blank" >https://doi.org/10.1145/3462223.3485618</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Yuan2013"></a>
+<p>
+Yuan, D., Lewandowski, C., &amp; Cross, B. (2013). Building a green unified computing IT laboratory through virtualization (J. Mienke, Ed.). <em>Journal of Computing Sciences in Colleges</em>, <em>28</em>(6), 76–83. <a
+href="https://doi.org/10.5555/2460156.2460172" target="_blank" >https://doi.org/10.5555/2460156.2460172</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-07-10.22sc-csc300-1.one-to-one_-many-to-one_-and-many-to-many-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-02-06.wc21-csc200-2.portfolio-milestone-i</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Portfolio Milestone I</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+WC21-CSC200-2: Computer Science Fundamentals<br />
+Prof. Chintan Thakkar<br />
+2022-02-06
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Portfolio Milestone I</h4>
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autopage-3"></a>
+
+
+<p>
+This is the first portfolio milestone for my class, where I will demonstrate knowledge of stacks, queues, and basic algorithm design.
+</p>
+
+<p>
+I have chosen to use <em>Guile Scheme</em> as my form of (pseudo)code, as I am familiar with it and it is quite brief. Using an executable language as one’s pseudocode allows for a confirmation of whether specific program flows will work.
+</p>
+
+<p>
+In order to keep things brief, I’ve also used global variables and mutability to simplify the assignment and comparison functions. This would be avoided if this were not a pseudocode-level work: The important thing here was to show the algorithms and
+the program flow, not the overall structure.
+</p>
+
+<p>
+And in order to quell confusion, I am using the queue library provided by Guile as my stack and queue objects, rather than implementing my own. For the stack-based operations, I have ensured a LIFO operative restriction remains throughout.
+</p>
+
+<p>
+There are three tasks put forth for this milestone:
+</p>
+
+<ul style="list-style-type:none">
+
+<li>
+<p>
+1. Write an algorithm that sets bottom equal to the last element in the stack, leaving the stack unchanged.
+</p>
+</li>
+<li>
+<p>
+2. Write an algorithm to create a copy of myStack, leaving myStack unchanged.
+</p>
+</li>
+<li>
+<p>
+3. Write an algorithm that sets last equal to the last element in a queue, leaving the queue empty.
+</p>
+</li>
+</ul>
+<h4 id="autosec-4">Last Element of Stack</h4>
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autopage-4"></a>
+
+
+<p>
+There are two ways I can concieve to complete this task.
+</p>
+
+<p>
+First, there is the iterative approach: create a temporary, empty stack. Push each member to it as we pop it off of the original stack. Once the original stack is empty, pop the first item off of the temporary stack and set last equal to it before then pushing it
+back onto the original stack. Then pop all of the remaining members off of the temporary stack, pushing them back onto the original stack.
+</p>
+
+<p>
+My preference, however, would be to use recursion: Basically, we will make an algorithm that checks to see if the stack only has one member. If so, this is our value, so we set last to it and do not recurse. If not, we pop the first member off of the stack,
+and recurse. Once we are past recursion, we then push the popped member <em>in each recursion</em> back onto the stack, which will naturally fall into preserving the order.
+</p>
+
+<p>
+Here is the relevant code for the algorithm outlined above:
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>last-element-of-stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>             </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>let</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>curr-value</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-pop!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                 </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>if</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-empty?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>set!</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>*last*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>last-element-of-stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                 </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-push!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span>)))
+</pre>
+</div>
+<h4 id="autosec-6">Copy Stack</h4>
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autopage-6"></a>
+
+
+<p>
+This task is largely implementable using a modified version of the above function, where we instead push each value to two stacks instead of one.
+</p>
+
+<p>
+Because of this change, we can now use a different flow-control mechanism—the <em>unless</em> clause—to get this work done. This keeps our lines of code down, making the concept as easy to understand as it originally was.
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>copy-stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>let</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>curr-value</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-pop!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>unless</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-empty?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>copy-stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-push!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-push!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span>)))
+</pre>
+</div>
+
+
+<p>
+Both of these functions rely on a language with (and thus, on the concept of) tail call optimization. This turns an otherwise expensive amount of recursion into a series of jump statements, and lets us use recursion to avoid unnecessary structures like
+duplicate stacks and iterative bodies.
+</p>
+<h4 id="autosec-8">Last Element of Queue (And Empty)</h4>
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autopage-8"></a>
+
+
+<p>
+There are a few ways we could execute this assignment: we could simply reference the last element of the queue with a tail (or rear) call, and then empty the queue in a single command by deleting it. Or, we could iterate through the queue and set last to
+each member, stopping once the queue is empty.
+</p>
+
+<p>
+I have chosen the second method, though the first might be more time efficient. Here is the relevant section of code:
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>while</b></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>not</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-empty?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>set!</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>*last*</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>deq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span>)))
+</pre>
+</div>
+
+
+<p>
+The basic algorithm would proceed as outlined above: while the queue is not empty, dequeue the first member of the queue, setting the value last equal to its value. If the queue is empty, we are finished, and the last value is set properly to the last member
+of the queue.
+</p>
+
+<p>
+Here is a full implementation, with comments:
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>use-modules</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>ice-9</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>q</span>))<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Queue Library</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>make-q</span>))<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Make our queue</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>*last*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#870000"
+>#f</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Define global variable "last"</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>do</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>i</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>0</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>1+</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>i</span>)))<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Prepopulate queue with 0..4, five values</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>((<span
+    class="textcolor"
+    style="color:#008000"
+>></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>i</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>4</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>enq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue2</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>i</span>))<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Prepopulate the queue with test values.</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Setup Complete. Actual algorithm below; executes as follows:</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; So long as the queue is not empty, we set last to the first item</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; in the queue, removing it from the queue as we do so (dequeuing it).</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Once the queue is empty, return the empty queue (which will be a</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; falsey value (#f)).</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>while</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>not</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-empty?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>set!</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>*last*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>deq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span>)))
+</pre>
+</div>
+<h4 id="autosec-11">Conclusion</h4>
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autopage-11"></a>
+
+
+<p>
+These three tasks, while very similar, require different levels of thought and a firm understanding of both stack and queue data structures. Though these are not production-ready algorithms, I feel as though they demonstrate a grasp of these concepts as
+well as the ability to take arbitrary similar problems and to produce adequate solutions.
+</p>
+
+<a id="2022-02-06.wc21-csc200-2.portfolio-milestone-i-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

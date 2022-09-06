@@ -1,0 +1,2690 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-06-19.22sc-csc300-1.virtual-machines-and-security</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Virtual Machines and Security</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+22SC-CSC300-1: Operating Systems and Architecture<br />
+Dr. Jonathan Vanover<br />
+2022-06-19
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Virtual Machines and Security</h4>
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autopage-3"></a>
+
+
+<p>
+The assignment was to create a virtual network with three virtual machines (one running Windows 10, one running Ubuntu, and one running Kali Linux). It was suggested to use Virtualbox for this task, however, I instead used libvirt et al as they are a
+more up-to-date set of tools for virtualization on my chosen platform (GNU Guix).
+</p>
+<h4 id="autosec-4">Setting Up the Network</h4>
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autopage-4"></a>
+
+
+<p>
+The first process was enabling support on GNU Guix for virtualization. This largely consisted of adding the correct packages and services to my system-wide configuration, which is included in appendix <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#app:sysconf">A</a> on page for appendix <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#app:sysconf">A</a>. The
+most important parts of this configuration are the inclusion of the <kbd>libvirt</kbd> package in the <kbd>packages</kbd> field, and the inclusion of the <kbd>libvirt-service-type</kbd> in the <kbd>services</kbd> field. Also
+important was adding my user account to the <kbd>kvm</kbd> group, because we are using the “Kernel-Based Virtual Machine” module of the Linux kernel.
+</p>
+
+<p>
+Once this was complete, I was able to reboot and use <kbd>libvirt</kbd> as intended. This began with opening <kbd>virt-manager</kbd>, as seen in figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:virt-manager">1</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:virt-manager">1</a>. The installation process for each OS was very similar and straightforward; the most important differences were the settings for the
+networks. The process went something like this:
+</p>
+
+<ul style="list-style-type:none">
+
+<li>
+<p>
+1. Begin Creating a New Virtual Machine, as in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step1">2</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step1">2</a>.
+</p>
+</li>
+<li>
+<p>
+2. Specify a Boot Image to act as the installer, as in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step2">3</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step2">3</a>. I had pre-downloaded all three installation ISOs, which made this step easy.
+</p>
+</li>
+<li>
+<p>
+3. Choose How Much Memory and How Many CPU Cores to Partition to this Virtual Machine While in Use, as in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step3">4</a> on page for
+figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step3">4</a>. It’s important to remember that You should avoid partitioning more than You have, and if You are <em>also</em> doing things like
+writing a paper, keep some resources for the Host OS as well.
+</p>
+</li>
+<li>
+<p>
+4. Create a Virtual Drive to Act as Storage for this VM, as in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step4">5</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step4">5</a>. Here is where I ran into an issue with my Host OS; as GNU Guix keeps most System Directories on a Read-Only Filesystem, the
+<em>default</em> location for Storage is inside of <em>root’s <kbd>&nbsp;/.local</kbd></em> folder. Obviously, this is undesirable for myriad reasons, but also my normal user cannot see that directory&#x2026;so instead I choose “Select or
+create custom storage” and manually make a <kbd>qcow2</kbd> disk in the globally-accessible <kbd>/var/lib/libvirt/images/pool</kbd> directory instead. (If privacy is a goal, the current user’s home directory is just as usable for this.)
+</p>
+</li>
+<li>
+<p>
+5. With the basics out of the way, we can move on to the interesting bit: Configuring the Virtual Networks. On the confirmation screen, make sure to select “Configure Before Installation”. A window looking similar to figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step5">6</a> on page for figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step5">6</a> will appear.
+We are interested in configuring the NIC, so change to the NIC panel as in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step6">7</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step6">7</a>.
+</p>
+<p>
+I had some networks pre-created (using <kbd>Edit > Connection Details > Virtual Networks</kbd>), and chose to allow all of the machines to initially use a NAT connection, so that they might update themselves post-install (and so I might
+install <kbd>neofetch</kbd> for a more pleasant OS-identification experience). This network is shown in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step8">9</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step8">9</a>. I also made sure to have a “Host-Only” Network set up at this step, as in figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step7">8</a> on page for figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:step7">8</a>, for ease of
+use later.
+</p>
+</li>
+<li>
+<p>
+6. Install to OS as normal. There are no special VM-centric concerns here. Also ensure all needed updates are applied, and any user-needed packages (<kbd>neofetch</kbd>) are installed.
+</p>
+</li>
+<li>
+<p>
+7. Finally, Go Into Each VM and configure the NIC to use the appropriate network. The Assignment had Windows 10 and Ubuntu on “Host-Only” networks, and Kali Linux on a NAT network. The final settings for each VM are shown in figures <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:kali2">13</a> to <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:windows2">15</a> on pages for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:kali2">13</a> to figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:windows2">15</a>.
+</p>
+<p>
+
+</p>
+</li>
+</ul>
+<h4 id="autosec-5">Results</h4>
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autopage-5"></a>
+
+
+<p>
+I was able to ping all three VMs, regardless of which virtual network they were on. This output is shown in figure <a href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:pings">16</a> on page for figure <a
+href="2022-06-19.22sc-csc300-1.virtual-machines-and-security.html#fig:pings">16</a>. I am confident this fulfills the needs of this assignment.
+</p>
+<h4 id="autosec-6"><span class="sectionnumber" >A&#x2003;</span>My System Configuration, with Virtualization Enabled.</h4>
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autopage-6"></a>
+
+
+<a id="app:sysconf"></a>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;; jory.scm</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;;</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;; This is the system-config file for Jory, my Purism Librem 14 Laptop</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;;</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;; Author: Christopher Rodriguez</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;; Created: 2022-04-10</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;; Last Released: 2022-06-09</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;; Contact: yewscion@gmail.com</i></span>
+<span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;;;</i></span>
+
+
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>use-modules</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>gnu</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>srfi</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>srfi-1</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>ice-9</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>textual-ports</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>guix</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>modules</span>))
+
+
+(<span
+    class="textcolor"
+    style="color:#0000FF"
+>use-service-modules</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>admin</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>avahi</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>base</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>databases</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>desktop</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>docker</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>games</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>mail</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>mcron</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                         </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>networking</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>ssh</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>virtualization</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>web</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>xorg</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>)
+
+
+(<span
+    class="textcolor"
+    style="color:#0000FF"
+>use-package-modules</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>admin</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>certs</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>databases</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>emacs</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>games</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>package-management</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>ssh</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                         </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>tls</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>version-control</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>xdisorg</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>)
+
+
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%ming-pubkey</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>plain-file</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ming_id.pub"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                  </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>string-append</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDvbir"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/LAxFP2O7WPCxX2BL5YIbb4yTPbnmJlooQaM7H5L0Dx"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"WAC0/3Q+XXqb6xDGrHmoJHTp3YHD30W1JNWQiKtKuEK"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"gYzYypiTWHU2MbZ4ahuQN7v2Bc1KM720MFaHKjDd8ru"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"rTya3cOd6PTXOKyhZIMjt1H6OgwYULX92oaYGVdEn+e"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"bSlR3xaSMyPXSJ5yPAWcZlHYrQysz7b2KtulTRvsaE0"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"gq3muCxFdIXqAlbAcCPScLoDWygEDMLSKN/gjV+4b45"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"3oiG21KnmKMhkbczu9YpbUdB46lLH6eb6twe+CNcaDZ"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"l/TNIA55l7UtaM9GMxesCQXIsTg0sFV9PZW2zpI4i8/"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"6vpAqr++t/1TQVOZjvxxv+5UWMbKVPJqawIXonOaN1I"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"z9svDuacMij2cBnyNxcBq5BsOjHO6ch2IYnflapFseP"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"fysve5Z3UVVOJJeCanp+nSGSrwDOckreVWnU8G2D0Mu"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"V5HNMNaghoI72uBVi5s3GmH2utl0RSh/x81byQ8iyb6"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"g8m2XiwwoxDGDu6sePVJOJ9iEUYmLWX4TcA4CVLhdFq"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"D1R/9/VE7w+RgvFmzNrufxZEaP3dXJVdIctyeCntGl9"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"eZreVc65GpHesIANJj/cDmeNPk8vyfPJpwHgLAZpGY4"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                  </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"NgbR8hXFnyrZRd+XcTvpkZcJc51OKo7kOQ== "</span>)))
+
+
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>updatedb-job</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; Run 'updatedb' at 3AM every day.      Here we write the</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>;; job's action as a Scheme procedure.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span><span
+    class="textcolor"
+    style="color:#666666"
+>#</span><span
+    class="textcolor"
+    style="color:#1A177D"
+>~</span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>job</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>'</span>(<span
+    class="textcolor"
+    style="color:#1A177D"
+>next-hour</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>'</span>(<span
+    class="textcolor"
+    style="color:#666666"
+>3</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>lambda</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>()
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>              </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>execl</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>string-append</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>#</span><span
+    class="textcolor"
+    style="color:#1A177D"
+>$findutils</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/bin/updatedb"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                      </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"updatedb"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                      </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"--prunepaths=/tmp /var/tmp /gnu/store"</span>))))
+
+
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-keyboard-layout</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>keyboard-layout</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"us,apl"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>#:options</b></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                        </span><span
+    class="textcolor"
+    style="color:#666666"
+>'</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"ctrl:swapcaps_hyper"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"compose:rctrl"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                         </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"grp:toggle"</span>)))
+
+
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-desktop-services</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>modify-services</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%desktop-services</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>delete</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>elogind-service-type</span>)))
+
+
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-service-addons</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>append</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>list</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>gnome-desktop-service-type</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>openssh-service-type</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>openssh-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                  </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>password-authentication?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#870000"
+>#f</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                  </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>authorized-keys</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span><span
+    class="textcolor"
+    style="color:#666666"
+>`</span>((<span
+    class="textcolor"
+    style="color:#BA2121"
+>"ming"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>,</span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%ming-pubkey</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"git"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>,</span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%ming-pubkey</span>)))))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>postgresql-service-type</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>postgresql-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                  </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>postgresql</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>postgresql-10</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>gmnisrv-service-type</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>wesnothd-service-type</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>docker-service-type</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>qemu-binfmt-service-type</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>qemu-binfmt-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                  </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>platforms</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>lookup-qemu-platforms</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"arm"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                                    </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"aarch64"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                                    </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"risc-v"</span>))))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>simple-service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>'my-cron-jobs</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                        </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>mcron-service-type</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                        </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>list</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>updatedb-job</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>set-xorg-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>xorg-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>keyboard-layout</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-keyboard-layout</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>elogind-service</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>#:config</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>elogind-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>handle-power-key</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>'ignore</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>libvirt-service-type</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>libvirt-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>unix-sock-group</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"libvirt"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>tls-port</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"16555"</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>service</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>virtlog-service-type</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-desktop-services</span>))
+
+
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-services</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>modify-services</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-service-addons</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>guix-service-type</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>     </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>config</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>=></b></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>guix-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>inherit</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>config</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>authorized-keys</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>append</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>list</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>local-file</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/etc/cdr255/frostpine.pub"</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                  </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%default-authorized-guix-keys</span>))))))
+(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-packages</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>list</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"nss-certs"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"xorg-server-xwayland"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"emacs"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"openssh"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"openssl"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"rxvt-unicode"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"git"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"libvirt"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"openjdk"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"stumpwm"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ncurses"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"guile"</span>))
+(<span
+    class="textcolor"
+    style="color:#0000FF"
+>operating-system</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>locale</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"en_US.utf8"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>timezone</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"America/New_York"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>keyboard-layout</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-keyboard-layout</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>host-name</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"jory"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>users</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>cons*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>user-account</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>name</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ming"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>comment</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"Christopher Rodriguez"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>group</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"users"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>home-directory</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/home/ming"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>supplementary-groups</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span><span
+    class="textcolor"
+    style="color:#666666"
+>'</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"wheel"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"netdev"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"audio"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"video"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"docker"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"libvirt"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"kvm"</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>user-account</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>name</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"git"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>group</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"git"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>home-directory</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/home/git"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>comment</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"For Use With Git"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>system?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#870000"
+>#t</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%base-user-accounts</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>groups</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>cons*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>user-group</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>name</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"git"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>system?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#870000"
+>#t</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%base-groups</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>packages</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>append</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>map</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>compose</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+>list</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>specification->package+output</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-packages</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%base-packages</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>services</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%my-services</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>bootloader</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>bootloader-configuration</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>bootloader</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>grub-bootloader</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>targets</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>list</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/dev/nvme0n1"</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>keyboard-layout</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>keyboard-layout</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>swap-devices</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>list</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>swap-space</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>target</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>uuid</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"0fd9015c-34ca-4d05-843b-584fa94796d3"</span>)))))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>file-systems</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>cons*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>file-system</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>mount-point</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>device</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>              </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>uuid</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ada80f5c-de9b-4a3b-b25d-cd4518d2a8f7"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>'ext4</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>type</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ext4"</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>file-system</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>            </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>mount-point</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"/home"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>device</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>uuid</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"0ee6f458-e0d7-4bc3-b449-b368901c70fd"</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>'ext4</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>          </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>type</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"ext4"</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>%base-file-systems</span>)))
+</pre>
+</div>
+
+
+<figure id="autoid-1" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="virt-manager.png" target="_blank" ><img
+    src="virt-manager.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 1:&nbsp;Virt-manager, a GUI front-end for libvirt-based Virtual Machines
+</p>
+</div>
+
+<a id="fig:virt-manager"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-2" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step1.png" target="_blank" ><img
+    src="step1.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 2:&nbsp;Creating a New VM in virt-manager
+</p>
+</div>
+
+<a id="fig:step1"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-3" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step2.png" target="_blank" ><img
+    src="step2.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 3:&nbsp;Selecting the ISO/OS to install
+</p>
+</div>
+
+<a id="fig:step2"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-4" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step3.png" target="_blank" ><img
+    src="step3.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 4:&nbsp;Partitioning the Host’s RAM and CPU Cores
+</p>
+</div>
+
+<a id="fig:step3"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-5" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step4.png" target="_blank" ><img
+    src="step4.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 5:&nbsp;Creating the Virtual Storage Medium
+</p>
+</div>
+
+<a id="fig:step4"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-6" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step5.png" target="_blank" ><img
+    src="step5.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 6:&nbsp;The Customization Overview
+</p>
+</div>
+
+<a id="fig:step5"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-7" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step6.png" target="_blank" ><img
+    src="step6.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 7:&nbsp;The NIC Customization Panel
+</p>
+</div>
+
+<a id="fig:step6"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-8" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step7.png" target="_blank" ><img
+    src="step7.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 8:&nbsp;The “Host-Only” (isolated) Network
+</p>
+</div>
+
+<a id="fig:step7"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-9" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="step8.png" target="_blank" ><img
+    src="step8.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 9:&nbsp;The Network Address Translation Network
+</p>
+</div>
+
+<a id="fig:step8"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-10" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="kali1.png" target="_blank" ><img
+    src="kali1.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 10:&nbsp;Kali Linux’s Neofetch and Network Information
+</p>
+</div>
+
+<a id="fig:kali1"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-11" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="ubuntu1.png" target="_blank" ><img
+    src="ubuntu1.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 11:&nbsp;Ubuntu’s Neofetch and Network Information
+</p>
+</div>
+
+<a id="fig:ubuntu1"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-12" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="windows1.png" target="_blank" ><img
+    src="windows1.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 12:&nbsp;Windows’ Neofetch and Network Information
+</p>
+</div>
+
+<a id="fig:windows1"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-13" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="kali2.png" target="_blank" ><img
+    src="kali2.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 13:&nbsp;The NIC settings for the Kali Linux VM
+</p>
+</div>
+
+<a id="fig:kali2"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-14" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="ubuntu2.png" target="_blank" ><img
+    src="ubuntu2.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 14:&nbsp;The NIC settings for the Ubuntu VM
+</p>
+</div>
+
+<a id="fig:ubuntu2"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-15" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="windows2.png" target="_blank" ><img
+    src="windows2.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 15:&nbsp;The NIC settings for the Windows VM
+</p>
+</div>
+
+<a id="fig:windows2"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-16" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="pings.png" target="_blank" ><img
+    src="pings.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 16:&nbsp;The Results of Pinging All Three VMs
+</p>
+</div>
+
+<a id="fig:pings"></a>
+
+</div>
+
+</figure>
+
+<a id="2022-06-19.22sc-csc300-1.virtual-machines-and-security-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

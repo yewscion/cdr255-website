@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-05-29.22sc-csc300-1.multi-threaded-computer-systems</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Multi-Threaded Computer Systems</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+22SC-CSC300-1: Operating Systems and Architecture<br />
+Dr. Jonathan Vanover<br />
+2022-05-29
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Multi-Threaded Computer Systems</h4>
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-3"></a>
+
+
+<p>
+On current computing systems, it is common to have multiple processes executing at the same time—that is, truly concurrent execution, not simply switching very quickly. This is the result of two separate ideas maturing and coming to the forefront of
+programs today: <em>Multithreaded Computing</em>, where lightweight processes share the machines resources (Serrano et al., <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>, p. 203), and <em>Multicore Architectures</em>, where CPUs can have more than one “core processing unit”, and
+therefore do two things at once. This allows for something seemingly magical to become possible: <em>Parallel Programming</em>.
+</p>
+<h4 id="autosec-4">Parallel Programming</h4>
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-4"></a>
+
+
+<p>
+“Parallel Programming” might be best defined in a way similar to an algorithm: Take a complex bit of work, divide it up into small, independent pieces, and have each one execute by itself to accomplish the original task (Erwig, <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Erwig2017p1">2017</a>).
+</p>
+
+<p>
+The thing that sticks out about <em>parallel programming</em> when opposed to <em>multiprogramming</em>—where multiple programs are loaded into memory at the same time—is the concept of <em>concurrency</em>: Take the resources of a
+system and divide them up across as many different subprocess as is possible for a task, <em>at the same time</em>. (As an aside: Take a moment and appreciate that this was once the exclusive domain of supercomputers and clusters, and is now in the
+phone that is in Your pocket.) Then it’s a matter of letting these concurrent processes run to completion, and using a scheduler sure they don’t bump into each other too much while sharing data, CPU time, and memory (Sattar et al., <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Sattar2010">2010</a>, p. 24).
+</p>
+
+<p>
+When it comes to sharing memory between concurrent processes, Serrano et al. (<a href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>) have asserted that the two most
+common implementations are <em>Event-Driven Programming</em>—that is, an event loop (where a single loop handles “events” like key presses and mouse clicks, and delegates such events to other functions to be handled as they happen)—and
+<em>Multithreaded Architectures</em>—Lightweight processes that share memory and execute according to one of two scheduling strategies (p. 203). This paper deals with multithreaded architectures.
+</p>
+<h4 id="autosec-5">Threads</h4>
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-5"></a>
+
+
+<p>
+Within “Multithreaded Architectures”, there primarily exist two classes of scheduling strategy: <em>competitive</em> (or, as used in this essay, <em>preemptive</em>), and <em>cooperative</em>. The main difference between these strategies is how
+use of the processor is yielded back to the scheduler: In <em>preemptive</em> multithreading, any thread can be suspended or resumed at any moment by the scheduler, regardless of the state of the work is was meant to get done (Silberschatz et al., <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Silberschatz2018c6">2018</a>, p. 257) In <em>cooperative</em> multithreading, this is not possible: The scheduler instead waits for the
+thread itself to yield control of the processor before it can be allocated elsewhere (Serrano et al., <a href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>, pp. 203–204).
+</p>
+
+<p>
+It is not without base that <em>preemptive</em> threads are more complex than their <em>cooperative</em> counterparts: Older OSes, such as Windows 3.1 and MacOS before OS/X, that once used cooperative multithreading have since made a switch
+towards preemptive multithreading in their more recent versions (Serrano et al., <a href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>, p. 204). And Sun et al. (<a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Sun2020">2020</a>) made it a point for their educational OS project “Quatros” to begin with a number of cooperative threads, and later
+transition to preemptive threads with some synchronization primitives (p. 51). However, there is a huge blocker to using cooperative threads on current computing machines (at least in performance-critical applications):
+</p>
+
+<p>
+Cooperative Threads cannot (easily) benefit from multiprocessor—or, in today’s world, multicore—machines (Serrano et al., <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>, p. 204).
+</p>
+<h4 id="autosec-6">Multicore Systems</h4>
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-6"></a>
+
+
+<p>
+If the purpose of using threads is to allow us to increase throughput and responsiveness (Muller et al., <a href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Muller2017">2017</a>, p. 677), then
+being able to <em>actually</em> do more than one thing at a time—rather than pretend to do so very convincingly, in the way that one CPU can “multitask” with multiprogramming and multitasking(Denning, <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Denning2017">2017</a>)—is an extremely effective game changer.
+</p>
+
+<p>
+Multicore CPUs—that is, CPUs with multiple processing “cores” that act independently of one another—are the bread-and-butter of personal computers today (Muller et al., <a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Muller2017">2017</a>, p. 677). These are a boon to the <em>preemptive</em> style of multithreading, because (in a basic sense) the
+scheduler can let more than one process execute at the same time. However, this <em>does</em> increase the complexity of the underlying system, and significantly: The data they are all operating on must be protected from mutation by more than one
+process at a time, or corruption will occur.
+</p>
+
+<p>
+A straightforward way to protect against this is a lockfile , though even that adds another layer of complexity to the system. And with more abstraction comes more implementation, and variety thereof: Preemptive threads are difficult to move from
+platform to platform, as there is no strict standard that they must adhere to (Serrano et al., <a href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>, p. 204).
+</p>
+
+<p>
+Of course, <em>cooperative</em> threads, which are normally structured to execute sequentially and not prone to interruption, don’t need such things: It’s assumed that one—and only one—process is going to act until that process is finished, so there
+cannot be race conditions. Lockfiles are unnecessary. And thus, the implementation is solid and standardized (at least compared to the <em>preemptive</em> threads) across platforms.
+</p>
+
+<p>
+However, as mentioned above, cooperative threads cannot reap the benefits of multi-core systems without modification . Instead of lockfiles, there are “cooperation points”, which (combined with some other considerations for things like IO) allow
+cooperative threads to work better on a multi-core machine (Serrano et al., <a href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>, p. 204).
+</p>
+
+<p>
+In the end, many believe that the solution lies somewhere in between one or the other, whether that’s simply a mix of the two, or a specific and defined protocol: Serrano et al. (<a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Serrano2004">2004</a>) have their “Fair Threads” scheme implementation, and Muller et al. (<a
+href="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems.html#LWR-ht-cite.0@Muller2017">2017</a>) has their special extension to StandardML.
+</p>
+<h4 id="autosec-7">Conclusion</h4>
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-7"></a>
+
+
+<p>
+It is perhaps worthy to note that there was no single standard that emerged over the 13 years between the above-mentioned papers: Perhaps this indicates another avenue of research is needed before we decide on a best-of-both-worlds standard. However,
+for now, threads still allow the machines we use to be orders of magnitude more effective than they otherwise would be.
+</p>
+
+<p>
+And regardless of how we make use of that hardware, we will always be asking to do just a little more.
+</p>
+<h4 id="autosec-8">References</h4>
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autopage-8"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Denning2017"></a>
+<p>
+Denning, P. J. (2017). Multitasking without thrashing. <em>Communications of the ACM</em>, <em>60</em>(9), 32–34. <a href="https://doi.org/10.1145/3126494" target="_blank" >https://doi.org/10.1145/3126494</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Erwig2017p1"></a>
+<p>
+Erwig, M. (2017, August 11). Computation and algorithms: Hansel and gretel. <em>Once upon an algorithm</em>. MIT Press. <a href="https://doi.org/10.7551/mitpress/10786.001.0001" target="_blank"
+>https://doi.org/10.7551/mitpress/10786.001.0001</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Muller2017"></a>
+<p>
+Muller, S. K., Acar, U. A., &amp; Harper, R. (2017, June 14). Responsive parallel computation: Bridging competitive and cooperative threading. In A. Cohen &amp; M. Vechev (Eds.), <em>Pldi 2017: Proceedings of the 38th acm sigplan conference on
+programming language design and implementation</em> (pp. 677–692). Association for Computing Machinery. <a href="https://doi.org/10.1145/3062341.3062370" target="_blank" >https://doi.org/10.1145/3062341.3062370</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Sattar2010"></a>
+<p>
+Sattar, A., Mondshein, L., &amp; Lorenzen, T. (2010). An operating systems course with projects in java (J. Impagliazzo, Ed.). <em>ACM Inroads</em>, <em>1</em>(2), 24–26. <a href="https://doi.org/10.1145/1805724.1805734"
+target="_blank" >https://doi.org/10.1145/1805724.1805734</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Serrano2004"></a>
+<p>
+Serrano, M., Boussinot, F., &amp; Serpette, B. (2004, August 24). Scheme fair threads. In D. S. Warren &amp; E. Moggi (Eds.), <em>Ppdp ’04: Proceedings of the 6th acm sigplan international conference on principles and practice of declarative
+programming</em> (pp. 203–214). Association for Computing Machinery. <a href="https://doi.org/10.1145/1013963.1013986" target="_blank" >https://doi.org/10.1145/1013963.1013986</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Silberschatz2018c6"></a>
+<p>
+Silberschatz, A., Galvin, P. B., &amp; Gagne, G. (2018, May 4). Synchronization tools. In D. Fowley, R. Dannelly, C. Nelson, K. Santor, &amp; A. Pham (Eds.), <em>Operating system concepts</em> (10th&nbsp;ed., pp. 257–288). Wiley. <a
+href="https://isbnsearch.org/isbn/9781119320913" target="_blank" >https://isbnsearch.org/isbn/9781119320913</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Sun2020"></a>
+<p>
+Sun, W.-F., Chan, S.-H., Liu, Z.-T., Yeh, Y.-H., &amp; Chou, P. H. (2020). Quatros: A preemptive multithreaded embedded os for education (H. Yun &amp; S. Quinton, Eds.). <em>SIGBED Review</em>, <em>17</em>(1), 49–55. <a
+href="https://doi.org/10.1145/3412821.3412829" target="_blank" >https://doi.org/10.1145/3412821.3412829</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-05-29.22sc-csc300-1.multi-threaded-computer-systems-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

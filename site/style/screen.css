@@ -1,0 +1,49 @@
+@media screen { 
+    html, body { min-height: 100vh; }
+    body, main, footer  { margin: 0 auto;
+                          font-family: 'Montserrat', serif;
+                          background-color: #B9A89B; }
+    a:link, a:visited, a:hover, a:active { text-decoration: none;
+                                           color: #2A6749; }
+    ul, header a h1 { padding: 0;}
+    header { align-items: baseline;
+             align-content: space-between;
+             display: flex; }
+    header a h1 { font-family: 'Press Start 2P', cursive;
+                  font-size: xx-large;
+                  color: #462700;}
+    header ul li, figure section ul li { display: inline-block;
+                                         list-style-type: none; }
+    main { margin: auto;
+           padding: 2rem 1rem;
+           position: relative;
+           min-height: 25em;
+           border: 0.1em solid #2A6749;
+           background-color: #FEFDFC77; }
+    main figure { float: right;
+                  max-width: 70%;
+                  margin-right: 0;
+                  text-align: center;
+                  font-size: x-small; }
+    main figure img { border: 2px solid #2A6749;
+                      max-width: 100%; }
+    main header { text-align: center;
+                  background-color: transparent;
+                  border-bottom: 1px black solid; }
+    main header h2, main header section, h1 { margin: 0 auto; }
+    main header section { font-size: small;}
+    main article section h3, header nav ul { margin-bottom: 0; }
+    article time, article aside { font-style: italic;
+                                  font-size: x-small;
+                                  margin: 0 auto;}
+    main article aside { position: absolute;
+                         bottom: 1rem;
+                         right: 3rem; }
+    main hr { width: 4em; }
+    footer { text-align: center; }
+    body { width: 90vw;
+           padding: 1em; }
+    header, article { display: flex;
+                      flex-direction: column; }
+    li { list-style-type: none; }
+    ul li ul li { padding-left: 2em; }

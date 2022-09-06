@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-02-06.wc21-csc200-2.algorithms</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-02-06.wc21-csc200-2.algorithms-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Algorithms</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+WC21-CSC200-2: Computer Science Fundamentals<br />
+Prof. Chintan Thakkar<br />
+2022-02-06
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Algorithms</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-3"></a>
+
+
+<p>
+If the essence of computation is the transformation of data representation (Erwig, <a href="2022-02-06.wc21-csc200-2.algorithms.html#LWR-ht-cite.0@Erwig2017">2017</a>), <em>how</em> that data is transformed is surely the
+mainstay of the science of computation. This paper dives into the idea of algorithms on an abstract level as the tools we use to manipulate data and solve problems, as well as outlining a few common household tasks with an algorithm and brief
+explanation. The problems this paper outlines are:
+</p>
+
+<ul style="list-style-type:none">
+
+<li>
+<p>
+1. Making a Peanut Butter and Jelly Sandwich.
+</p>
+</li>
+<li>
+<p>
+2. Getting Up in the Morning.
+</p>
+</li>
+<li>
+<p>
+3. Doing Your Homework.
+</p>
+</li>
+<li>
+<p>
+4. Driving Home in the Afternoon.
+</p>
+<p>
+
+</p>
+</li>
+</ul>
+
+<p>
+All problem solving uses algorithms, whether they are explicitly referred to as such or not. Understanding their place in the human experience will only enable better solutions to be found.
+</p>
+<h4 id="autosec-4">What is an Algorithm?</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-4"></a>
+
+
+<p>
+Lovelace believed in tempering our approach to science with intuition (Lai, <a href="2022-02-06.wc21-csc200-2.algorithms.html#LWR-ht-cite.0@Lai2017">2017</a>, p.2). By using our inherent creativity as humans to approach the
+constructs present in an otherwise abstract model—and indeed, to use that creativity to create such models in the first place—we would be able to achieve progress limited only by our collective imagination. And the <em>way</em> we can do such things
+is by understanding, and using, algorithms.
+</p>
+
+<p>
+In Lovelace’s Poetical Science, there were three main features: Observation, Interpretation, and Integration (Lai, <a href="2022-02-06.wc21-csc200-2.algorithms.html#LWR-ht-cite.0@Lai2017">2017</a>, p.3). If we can draw a thread
+from Interpretation, where models are built and analysis applied, to Data Structures, then it follows that Integration is the realm of the Algorithm: Applying pragmatic applications to those abstract models, connecting disparate ideas by presenting data in
+new ways, and most importantly allowing solutions to become part of a more cohesive whole. Algorithms let us take the data we have and make actual use of it.
+</p>
+
+<p>
+In many ways, Algorithms are the verbs of Computer Science: With a clearly defined algorithm, different computers can perform a specific computation in a reliable, repeatable way (Erwig, <a
+href="2022-02-06.wc21-csc200-2.algorithms.html#LWR-ht-cite.0@Erwig2017">2017</a>, p.8). We connect data to build new and useful things by putting that data through a rigorously specific set of computations. Reproducability,
+reliability, and reasonability in our code is provided almost entirely through the selection and implementation of the correct (for the problem at hand) algorithm.
+</p>
+
+<p>
+The following are examples of such algorithms for common, everyday tasks, and brief explanations thereof. These tasks are “problems” most will be familiar with. Few of us consider such mundane tasks from an abstract-enough viewpoint to outline such
+an algorithm, but each and every person has an algorithm they use (implicitly) to get these things done.
+</p>
+<h4 id="autosec-5">Sandwiches</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-5"></a>
+
+
+<p>
+We’ll first turn our attention to Making a Peanut Butter and Jelly Sandwich.
+</p>
+<div class="center" >
+
+<p>
+
+<a href="pbj-algo.png" target="_blank" ><img
+    src="pbj-algo.png"
+    style="
+    -ms-transform:scale(0.6,0.6);
+    -webkit-transform:scale(0.6,0.6);
+    transform:scale(0.6,0.6);
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+</div>
+
+<p>
+This is a fairly straightforward algorithm to consider; It is very rare that any deviation or flow control is needed in such a straightforward (and destructive!) process. We start by gathering all of the materials which we will manufacture into our finished
+sandwich (2 slices of bread, a jar of peanut butter, and a jar of jelly) and the tools we’ll need to do so correctly (a plate and a knife). For the purposes of this exercise we are assuming these are already existent and defined.
+</p>
+
+<p>
+We then move onto the steps. There are only two points at which we will judge whether we are ready to continue or not: After applying the Peanut Butter, and after applying the Jelly. The condition we are going to check for is the amount that has been
+applied: If more is needed, the step should be repeated until we “have enough”. Otherwise, it is simply a linear progression of steps as outlined in Figure <a href="2022-02-06.wc21-csc200-2.algorithms.html#fig:flowpbj">1</a>.
+</p>
+
+<p>
+It is worth mentioning here that, in our example, we are not considering the sandwich made until it has been sliced into two halves. We will not go into the controversy on this point; Some consider this step optional. That is not the case here.
+</p>
+<h4 id="autosec-7">Waking Up</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-7"></a>
+
+
+<p>
+For this algorithm, we are actually going to break up the process into a few different, smaller sections—each algorithms in their own right—to make it easier to conceptualize the phases of our process. These are the yellow blocks beneath the normal steps
+in Figure <a href="2022-02-06.wc21-csc200-2.algorithms.html#fig:flowgup">2</a>.
+</p>
+<div class="center" >
+
+<p>
+
+<a href="work-algo.png" target="_blank" ><img
+    src="work-algo.png"
+    style="
+    -ms-transform:scale(0.6,0.6);
+    -webkit-transform:scale(0.6,0.6);
+    transform:scale(0.6,0.6);
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+</div>
+
+<p>
+There are three main phases: Lounging Around, Food and Drink, and Leaving the Apartment. How we enter and leave each section is modified slightly by the other big departure from our sandwich algorithm: Decisions. At two crucial moments in our
+overall algorithm, a choice is made: First, we decide whether or not we are going into work today. And second, we decide if we want to eat out today.
+</p>
+
+<p>
+If it is a work day, unfortunately, the Lounging Around step is cut very short, by simply getting out of bed. If we are eating out, we do not need to make toast—likewise, if we are not eating out, we do not need to order food. These steps are skipped when
+appropriate.
+</p>
+
+<p>
+Finally, there are some steps in the process—like getting dressed, for instance—that are executed no matter what. After all, we can’t leave the house if we haven’t gotten dressed.
+</p>
+<h4 id="autosec-9">Doing Homework</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-9"></a>
+
+
+<p>
+Homework is a fairly variable process: At times, papers need to be written. At other times, papers need to be read. The algorithm outlined here assumes the function itself is already defined: There is no need to outline <em>how</em> a paper gets
+written. Instead, focus is put on the decision-making process, and iterating over a loop.
+</p>
+<div class="center" >
+
+<p>
+
+<a href="home-algo.png" target="_blank" ><img
+    src="home-algo.png"
+    style="
+    -ms-transform:scale(0.6,0.6);
+    -webkit-transform:scale(0.6,0.6);
+    transform:scale(0.6,0.6);
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+</div>
+
+<p>
+There are four defined homework functions here: Write Paper, Post Discussion, Study Article, and Review Notes. It is assumed there is a stack of work to do (Assignments), and once it is done, the assignments need to be Submitted. This flow can be seen
+in Figure <a href="2022-02-06.wc21-csc200-2.algorithms.html#fig:flowhom">3</a>
+</p>
+
+<p>
+While there are still assignments to do, we decide which kind of assignment it is: A paper, an article, a discussion, or a note. Depending on that type, we then move to a specific action, as outlined above. Once that action is complete, we return to pulling
+another task off of the pile, until it is empty. When it is empty, we submit everything.
+</p>
+<h4 id="autosec-11">Driving Home</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-11"></a>
+
+
+<p>
+The final algorithm to be presented here is that for driving home in the afternoon. This algorithm will highlight the concept of an exception.
+</p>
+<div class="center" >
+
+<p>
+
+<a href="drive-algo.png" target="_blank" ><img
+    src="drive-algo.png"
+    style="
+    -ms-transform:scale(0.6,0.6);
+    -webkit-transform:scale(0.6,0.6);
+    transform:scale(0.6,0.6);
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+</div>
+
+<p>
+Driving, on the surface, seems very straightforward: Get in the car, turn it on, drive home, turn it off, get out. However, the most complicated wrinkle to this problem is the myriad of other people trying to do the same thing, and the additional problems
+that might therefore be caused.
+</p>
+
+<p>
+Limiting the possible problems to a reasonable number: An accident could happen, traffic could build up, and a road could be closed. If any of these things happen, our process will need to change: Traffic requires more defensive, attentive driving. A
+road closure requires a new route to be chosen. And an accident aborts the concept of driving altogether, leading us towards the entirely separate process of dealing with insurance and possibly worse issues.
+</p>
+
+<p>
+How we move between these issues can be seen in Figure <a href="2022-02-06.wc21-csc200-2.algorithms.html#fig:flowdri">4</a>. Note that the algorithm does <em>not</em> always end in success!
+</p>
+<h4 id="autosec-13">Conclusion</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-13"></a>
+
+
+<p>
+Algorithms are the verbs of Computer Science. They are <em>what we do</em> that makes computation—that is, the transformation of our data and how it is represented—happen. Without algorithms, we could not solve even the simplest of problems.
+And algorithms are everywhere in our daily lives.
+</p>
+
+<figure id="autoid-1" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="pbj.png" target="_blank" ><img
+    src="pbj.png"
+    style="
+    height:325pt ;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 1:&nbsp;Making a Peanut Butter and Jelly Sandwich
+</p>
+</div>
+
+<a id="fig:flowpbj"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-2" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="get-up.png" target="_blank" ><img
+    src="get-up.png"
+    style="
+    height:650pt ;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 2:&nbsp;Getting Up for the Day
+</p>
+</div>
+
+<a id="fig:flowgup"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-3" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="homework.png" target="_blank" ><img
+    src="homework.png"
+    style="
+    height:520pt ;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 3:&nbsp;Doing Homework
+</p>
+</div>
+
+<a id="fig:flowhom"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-4" class="figure ">
+
+<p>
+
+<a href="car.png" target="_blank" ><img
+    src="car.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 4:&nbsp;Driving Home in the Afternoon
+</p>
+</div>
+
+<a id="fig:flowdri"></a>
+
+</figure>
+<h4 id="autosec-17">References</h4>
+<a id="2022-02-06.wc21-csc200-2.algorithms-autopage-17"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Erwig2017"></a>
+<p>
+Erwig, M. (2017, August 11). <em>Once upon an algorithm: How stories explain computing</em>. MIT Press. <a href="https://doi.org/10.7551/mitpress/10786.001.0001" target="_blank"
+>https://doi.org/10.7551/mitpress/10786.001.0001</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Lai2017"></a>
+<p>
+Lai, A. (2017). Ada Lovelace: ‘poetical scientist’. <em>OR/MS Today</em>, <em>44</em>(1). Retrieved January 23, 2022, from <a
+href="https://www.informs.org/ORMS-Today/Public-Articles/February-Volume-44-Number-1/Ada-Lovelace-poetical-scientist" target="_blank"
+>https://www.informs.org/ORMS-Today/Public-Articles/February-Volume-44-Number-1/Ada-Lovelace-poetical-scientist</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-02-06.wc21-csc200-2.algorithms-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

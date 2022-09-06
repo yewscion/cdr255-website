@@ -82,6 +82,9 @@ info below.
 That said, as this is my /personal/ website, anything more than structural fixes
 or accessibility stuff should probably go on /your/ website instead 😉.
 
+Color Scheme is: DARK: #462700; LIGHT: #B9A89B; MID: #847467; POP: #2A6749.
+
+
 {{{licenseinfo}}}
 
 # Local Variables:

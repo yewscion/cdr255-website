@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-06-19.22sc-csc300-1.memory-management</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-06-19.22sc-csc300-1.memory-management-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Memory Management</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+22SC-CSC300-1: Operating Systems and Architecture<br />
+Dr. Jonathan Vanover<br />
+2022-06-19
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Memory Management</h4>
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-3"></a>
+
+
+<p>
+It was the Atlas supervisor in 1959, and then more broadly IBM’s OS 360 in 1965, that introduced the concept of “multitasking”—executing (or <em>seeming</em> to execute) many processes simultaneously on one machine—to the world of computer
+science (Denning, <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Denning2017">2017</a>, p. 32). With that introduction came a new question: What is the best way to divide up a system’s memory? This
+paper looks over the basics of memory, memory management, and paging.
+</p>
+<h4 id="autosec-4">Physical, Logical, Virtual, and MMU</h4>
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-4"></a>
+
+
+<p>
+<em>Memory</em> is basically temporary storage for the computer, usually an assembly of storage cells each able to store the same number of bits. <em>RAM</em> is volatile (all stored data gets lost with a loss of power) memory that is both readable
+and writable. <em>Memory Locations</em> are the specific physical cells used to store the data, whereas <em>Memory Addresses</em> are the CPU’s way of designating a location in memory (which is not (usually) the same as the location itself)
+(Crow, <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Crow1996">1996</a>, p. 3).
+</p>
+
+<p>
+These last two terms are important: Because Addresses don’t correspond to specific Locations when it comes to memory, an Address can point to whatever Location in memory it needs to in order to work. And, because of this, it is possible for a program
+to operate in a different location in memory than it believes it actually is (Crow, <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Crow1996">1996</a>, p. 12).
+</p>
+
+<p>
+<em>Physical</em> memory is the hardware inside the computer that is used to provide the RAM for the system. <em>Logical</em> memory is the addresses provided by the CPU to the programs and data the system is using, regardless of the true
+memory locations they map to. And <em>Virtual</em> memory is one step further, where the addresses map to artificial locations that get translated to RAM or data on disk, enlarging the memory available to a system by allowing the CPU to use more
+memory than it actually has (Alverti et al., <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Alverti2020">2020</a>, p. 516), thus potentially keeping more parts of that memory <em>contiguous</em>. One
+example of virtual memory is with <em>swap space</em> on GNU/Linux, where either an entire partition or a file on a specific partition can be used as a part of the virtual memory a system can utilize.
+</p>
+
+<p>
+COMDEX, Lotus, and Intel eventually standardized a smaller section of memory that each of these addresses might refer to—the “page”, which was traditionally 4 KiB but is now much larger—with their “Expanded Memory Specification”, or “EMS
+3.0” (Crow, <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Crow1996">1996</a>, p. 7). This process of translating between virtual addresses, pages, and physical memory is facilitated by a dedicated piece
+of hardware: the <em>Memory Management Unit</em>, or “MMU” (Oliveri &amp; Balzarotti, <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Oliveri2022">2022</a>, 1:4). This combination of separate
+ways to refer to a machine’s memory allows for interesting and useful methods for the allocation and management of the memory a system actually uses, and the MMU is the final step for enabling this to work.
+</p>
+<h4 id="autosec-5">Allocation with Respect to Contiguity</h4>
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-5"></a>
+
+
+<p>
+The translation between these virtual or logical addresses and the physical address of the actual hardware imposes a not-insignificant amount of overhead (and this is doubly true if the Operating System is a Virtualized guest running inside a host OS)
+(Alverti et al., <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Alverti2020">2020</a>, p. 516). Therefore, it is worthwhile to try to keep all memory as <em>contiguous</em>—that is, allocated as one
+continuous block of memory—as possible during allocation. There have been many ways memory allocation has been attempted over the years, though the solutions can be divided into two rough groups: “eager” paging, and “ranger” paging.
+</p>
+
+<p>
+With “eager” paging, more than a single page in memory is allocated in advance for a specific task. The original cap was around 2MB, however that limit has long been passed due to the sheer size of the data we process generally today. The downside to
+this choice is that it wastes resources at a <em>very</em> high rate—on x86_64 based systems, the initially-supported page sizes are 512GB and 1024GB (Alverti et al., <a
+href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Alverti2020">2020</a>, p. 516). This exacerbates the downsides immensely: huge amounts of space is wasted and it becomes harder to find large enough free
+blocks the longer the system is running.
+</p>
+
+<p>
+In contrast, in “ranger” paging—where applications are loaded without consideration to contiguity—uses “asynchronous defragmentation”: the scattered pages are migrated into a contiguous region of memory when not directly in use (Alverti et al., <a
+href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Alverti2020">2020</a>, p. 515), during otherwise-idle CPU time. Apart from the obvious downside of “double touching” the data being loaded into memory,
+this can also cause excessive address translation time due to the initially fragmented, noncontagious nature of the data being loaded.
+</p>
+<h4 id="autosec-6">A Brief Note on Paging</h4>
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-6"></a>
+
+
+<p>
+There are two main approaches to paging used in today’s world, centered around different ways of storing the pages and their data for later use by the system: “radix trees”, and “inverted page tables” (Oliveri &amp; Balzarotti, <a
+href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Oliveri2022">2022</a>, 1:4).
+</p>
+
+<p>
+With radix trees, data is stored hierarchically: Starting at the root, which is stored in a special register for both the operating system and the MMU, directory tables branch out to eventually point to the pages’ physical location in the system, allowing the
+MMU to essentially do a search on this tree to translate a virtual address to a physical one. To contrast, with inverted page tables, the data structure is a hash table instead: The OS and MMU use the same hashing function to create indexes for this table
+and use these hashes as keys to access the data stored in a specific page (Oliveri &amp; Balzarotti, <a href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Oliveri2022">2022</a>, 1:5).
+</p>
+
+<p>
+It’s important to mention that the above two groups are largely generalized, and not an indication that memory management is a “this or that” style problem. As mentioned by Oliveri and Balzarotti (<a
+href="2022-06-19.22sc-csc300-1.memory-management.html#LWR-ht-cite.0@Oliveri2022">2022</a>), there is a large amount of complexity and variability in the way that the above are implemented across different architectures (p. 1:12).
+This paper is not meant to be comprehensive, but an overview of high-level concepts.
+</p>
+<h4 id="autosec-7">Conclusion</h4>
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-7"></a>
+
+
+<p>
+Notwithstanding the above disclaimer, the information presented in this paper is illustrative of three key concepts regarding memory management today: First, the memory management system is still largely controlled by hardware, as the MMU and OS
+need to agree on a scheme for storing the pages memory is split into. Second, each and every memory access involves many different parts of a computer, both hardware and software, that can vary greatly across architecture and operating system. And
+third, while the amount of memory available to a system has grown significantly in the last few decades, any method of improving the allocation, management, and effective use of memory in computing systems will have wide-reaching effects for the
+future of the field as a whole.
+</p>
+
+<figure id="autoid-1" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="linux-memory.png" target="_blank" ><img
+    src="linux-memory.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 1:&nbsp;Checking Memory Usage on GNU/Linux
+</p>
+</div>
+
+<a id="fig:linux"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-2" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="windows-memory.png" target="_blank" ><img
+    src="windows-memory.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 2:&nbsp;Checking Memory Usage on Windows 10
+</p>
+</div>
+
+<a id="fig:windows"></a>
+
+</div>
+
+</figure>
+<h4 id="autosec-10">References</h4>
+<a id="2022-06-19.22sc-csc300-1.memory-management-autopage-10"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Alverti2020"></a>
+<p>
+Alverti, C., Psomadakis, S., Karakostas, V., Gandhi, J., Nikas, K., Goumas, G., &amp; Koziris, N. (2020, September 23). Enhancing and exploiting contiguity for fast memory virtualization. In C.-J. Wu, L. Eeckhout, A. Naithani, &amp;
+K. Lakshminarasimhan (Eds.), <em>Isca ’20: Proceedings of the ACM/IEEE 47th annual international symposium on computer architecture</em> (pp. 515–528). IEEE Press. <a href="https://doi.org/10.1109/ISCA45697.2020.00050"
+target="_blank" >https://doi.org/10.1109/ISCA45697.2020.00050</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Crow1996"></a>
+<p>
+Crow, J. (1996). The MS-DOS memory environment (K.-W. Wong, Ed.). <em>ACM SIGICE Bulletin</em>, <em>21</em>(3), 2–16. <a href="https://doi.org/10.1145/226036.226037" target="_blank"
+>https://doi.org/10.1145/226036.226037</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Denning2017"></a>
+<p>
+Denning, P. J. (2017). Multitasking without thrashing. <em>Communications of the ACM</em>, <em>60</em>(9), 32–34. <a href="https://doi.org/10.1145/3126494" target="_blank" >https://doi.org/10.1145/3126494</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Oliveri2022"></a>
+<p>
+Oliveri, A., &amp; Balzarotti, D. (2022, March 30). <em>In the land of mmus: Multiarchitecture os-agnostic virtual memory forensics</em> (N. Li, Ed.) [AAM]. Association for Computing Machinery. <a
+href="https://doi.org/https://doi.org/10.1145/3528102" target="_blank" >https://doi.org/https://doi.org/10.1145/3528102</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-06-19.22sc-csc300-1.memory-management-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

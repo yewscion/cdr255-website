@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>The Essential Services of Operating Systems</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+22SC-CSC300-1: Operating Systems and Architecture<br />
+Dr. Jonathan Vanover<br />
+2022-05-22
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">The Essential Services of Operating Systems</h4>
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-3"></a>
+
+
+<p>
+When a computer boots, it is initialized by the firmware on the motherboard, which ensure the hardware is ready for use when control is passed over to the operating system (Frazelle, <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Frazelle2019">2019</a>, p. 34). The Operating System then starts a (usually large) number of “services”—in this context,
+programs that run and enable the operating system to complete a well-defined goal like “display an image” or “perform user login management”—before finishing its boot and handing control of the machine over to the user.
+</p>
+
+<p>
+Various services are started at boot on the GNU/Linux Operating System<sup>1</sup>, as can be seen in Figure <a href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#fig:nixserv">1</a>.
+Likewise, there are many services that Microsoft Windows provides, as can be seen in Figure <a href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#fig:winserv">2</a>. These services have
+wildly divergent names and implementations, but often will attempt to provide similar function to the end user of the operating system. These expectations from the user side might very well be the deciding factor in why someone chooses one operating
+system over another: Moss (<a href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Moss2008">2008</a>) highlights the services an operating system might provide as being one
+of the three basic questions to ask when considering a new operating system (p. 92).
+</p>
+
+<p>
+It may be helpful, then, to define what exactly the operating system is. Silberschatz et al. (<a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Silberschatz2018c1">2018</a>) include the kernel, the middleware frameworks, and any system programs included in the
+distribution of an operating system as constituting the whole of the operating system itself (p. 7). This is an apt definition, as it includes three levels to examine services within: the kernel, the middleware, and the system application. For the purposes of
+this paper, one service from each area will be examined across two separate operating systems.
+</p>
+<div class="footnotes" >
+<p>
+<sup>1</sup>&nbsp;The verbiage here is still a bit of a misnomer, as what is really being discussed here are <em>systemd services</em>, not those inherent to a GNU/Linux distribution. Due to the recommended Ubuntu-based operating system being
+the “GNU/Linux” offering, SysVInit, GNU Shepherd, OpenRC, and others are not being discussed here.
+</p>
+
+</div>
+<h4 id="autosec-5">The Device Driver Loader Service (Kernel)</h4>
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-5"></a>
+
+
+<p>
+This service type watches the hot-pluggable ports of a machine for changes, especially for new hardware to be attached to them. Once a change is detected, it loads the device driver into the kernel, so that it might communicate properly with the kernel.
+</p>
+
+<p>
+In GNU/Linux, this subsystem is generally called “hotplug”(The Linux Kernel Development Community, <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Linux2022">2022</a>), though it is implemented as two separate services: uDev, which handles the consistent naming of
+devices regardless of port, and HAL, which handles maintaining a list of devices connected to the system at any one time (Berg et al., <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Berg2022">2022</a>). It is <kbd>udevd.service</kbd>, however, that actually handles the loading of the kernel modules
+upon detection of a new device, by calling the program <kbd>/sbin/modprobe</kbd> (Beekmans, <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Beekmans2020c7-1">2020</a>, s. 7.3.2.3).
+</p>
+
+<p>
+In Windows, the similar service is called “Plug and Play”. It handles loading the device driver, allocating the resources for the device, and goes further by exposing a programming interface for programs to detect changes in hardware as well as for drivers
+to interact with the system itself (Hudek &amp; Sherer, <a href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Hudek2021">2021</a>). In this way, it actually might qualify as
+Middleware as well: It provides a framework that makes programming applications (or drivers) easier for the programmers (Silberschatz et al., <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Silberschatz2018c1">2018</a>, p. 6).
+</p>
+<h4 id="autosec-6">The Power Monitor Service (Middleware)</h4>
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-6"></a>
+
+
+<p>
+This service monitors the power draw of the computer system, and any batteries that it may be drawing from. It updates programs that might display such readings to the user, and enacts any policies that the user may have set regarding idle time or low
+battery.
+</p>
+
+<p>
+In GNU/Linux, this service is called “UPower”. As middleware, it provides a service on the system message bus that allows any application to gain access to the data it gathers, including statistics and device events (Hughes, <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Hughes2010">2010</a>). There is another system called “PolicyKit” that may restrict suspension or hibernation operations, but
+this is out of the scope for this service.
+</p>
+
+<p>
+In Windows, this functionality is provided by the “User-Mode Power Service”, or “UMPS”. According to Marshall (<a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Marshall2021">2021</a>), the aim of this service is to provide a single interface for all aspects of power management to
+applications that might need it, including reporting, controlling, and responding to the current power used by the system.
+</p>
+<h4 id="autosec-7">The Firewall Service (System Application)</h4>
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-7"></a>
+
+
+<p>
+With the computers of today, it is a foregone conclusion that almost all of them will want to connect to the internet at some point. It is therefore reasonable for a firewall to be included in the definition of an operating system.
+</p>
+
+<p>
+The “Uncomplicated Firewall” (“ufw”) is actually a front end for a venerable piece of code called <kbd>iptables</kbd>. What ufw does is provide a host-focused command-line interface for manipulating this firewall. It was introduced in Ubuntu 8.04
+LTS, and has since spread to use in many different (systemd-based) distributions of GNU/Linux (Contributors to the Ubuntu documentation wiki, <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Ubuntu2021">2021</a>).
+</p>
+
+<p>
+The “Windows Defender Firewall with Advanced Security” (“WFAS”) is a host-focused firewall that lets the user create rules for traffic that might enter the user’s computer (Athavale et al., <a
+href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Athavale2021">2021</a>). WFAS also supports a subsystem called “IPSec”, which <em>requires</em> authentication from
+any system attempting to connect to a user’s computer.
+</p>
+<h4 id="autosec-8">Conclusion</h4>
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-8"></a>
+
+
+<p>
+Newell and Simon (<a href="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems.html#LWR-ht-cite.0@Newell1976">1976</a>) asserted in their Turing Award lecture that Computer Science is the study of
+the “programmed, living machine” that is a running computer (p. 113). If this is the case, then these kinds of services might well be the nervous system of that creature: Responding to stimuli, allowing the hardware to be useful, monitoring the status of
+the hardware… And of course, sending signals constantly back to the brain, the kernel, which controls and supervises everything.
+</p>
+
+<p>
+These services have generally stabilized to a standard minimum across various operation systems. If an operating system released today were to omit a driver-loading service, a power service, or even a firewall, it would be noticed and decried as a great
+deficiency in that operating system. This is because these services are an accepted—and expected—part of any present-day OS.
+</p>
+
+<figure id="autoid-1" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="nix-services.png" target="_blank" ><img
+    src="nix-services.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 1:&nbsp;List of Services inside of Ubuntu 20.04
+</p>
+</div>
+
+<a id="fig:nixserv"></a>
+
+</div>
+
+</figure>
+
+<figure id="autoid-2" class="figure ">
+<div class="center" >
+
+<p>
+
+<a href="win-services.png" target="_blank" ><img
+    src="win-services.png"
+    style="
+    width:434pt;
+    "
+    class="inlineimage"
+    alt="(image)"
+></a>
+</p>
+
+<div class="figurecaption" >
+<p>
+Figure 2:&nbsp;List of Services inside of Windows 10
+</p>
+</div>
+
+<a id="fig:winserv"></a>
+
+</div>
+
+</figure>
+<h4 id="autosec-11">References</h4>
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autopage-11"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Athavale2021"></a>
+<p>
+Athavale, M., Habib, I., Cruz, M., jcaparas, Mabee, D., Gorzelany, A. M., Hall, J., Bichsel, A., Vangel, D., &amp; Simpson, D. (2021, October 28). <em>Windows defender firewall with advanced security</em>. Microsoft Corporation. Retrieved May 22,
+2022, from <a href="https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-firewall/windows-firewall-with-advanced-security" target="_blank"
+>https://docs.microsoft.com/en-us/windows/security/threat-protection/windows-firewall/windows-firewall-with-advanced-security</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Beekmans2020c7-1"></a>
+<p>
+Beekmans, G. (2020, March 1). <em>Overview of device and module handling</em> (B. Dubbs, Ed.). Linux from Scratch. Retrieved May 22, 2022, from <a href="https://www.linuxfromscratch.org/lfs/view/9.1/chapter07/udev.html"
+target="_blank" >https://www.linuxfromscratch.org/lfs/view/9.1/chapter07/udev.html</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Berg2022"></a>
+<p>
+Berg, D., Vanwoerkom, H., Keeling, S., Torracca, B., skizzhg, &amp; Giraud, J. P. (2022). <em>Devicemanagement</em>. Debian Wiki. Retrieved May 22, 2022, from <a href="https://wiki.debian.org/DeviceManagement"
+target="_blank" >https://wiki.debian.org/DeviceManagement</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Ubuntu2021"></a>
+<p>
+Contributors to the Ubuntu documentation wiki. (2021, October 17). <em>Uncomplicatedfirewall</em>. Canonical Ltd. Retrieved May 22, 2022, from <a href="https://wiki.ubuntu.com/UncomplicatedFirewall" target="_blank"
+>https://wiki.ubuntu.com/UncomplicatedFirewall</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Frazelle2019"></a>
+<p>
+Frazelle, J. (2019). Open source firmware. <em>Communications of the ACM</em>, <em>62</em>(10), 34–38. <a href="https://doi.org/10.1145/3343042" target="_blank" >https://doi.org/10.1145/3343042</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Hudek2021"></a>
+<p>
+Hudek, T., &amp; Sherer, T. (2021, December 14). <em>Introduction to plug and play: Windows drivers</em>. Microsoft Corporation.
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Hughes2010"></a>
+<p>
+Hughes, R. (2010). <em>Upower</em>. Freedesktop.org. Retrieved May 22, 2022, from <a href="https://upower.freedesktop.org/" target="_blank" >https://upower.freedesktop.org/</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Marshall2021"></a>
+<p>
+Marshall, D. (2021, December 14). <em>User mode power service</em>. Microsoft Corporation. Retrieved May 22, 2022, from <a
+href="https://docs.microsoft.com/en-us/windows-hardware/drivers/powermeter/user-mode-power-service" target="_blank"
+>https://docs.microsoft.com/en-us/windows-hardware/drivers/powermeter/user-mode-power-service</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Moss2008"></a>
+<p>
+Moss, J. L. (2008). Does which operating system you choose matter? <em>Security Distributing and Marketing</em>, <em>38</em>(6), 92–96.
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Newell1976"></a>
+<p>
+Newell, A., &amp; Simon, H. A. (1976). Computer science as empirical inquiry: Symbols and search. <em>Communications of the ACM</em>, <em>19</em>(3), 113–126. <a href="https://doi.org/10.1145/360018.360022"
+target="_blank" >https://doi.org/10.1145/360018.360022</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Silberschatz2018c1"></a>
+<p>
+Silberschatz, A., Galvin, P. B., &amp; Gagne, G. (2018, May 4). Introduction. In D. Fowley, R. Dannelly, C. Nelson, K. Santor, &amp; A. Pham (Eds.), <em>Operating system concepts</em> (10th&nbsp;ed., pp. 3–54). Wiley. <a
+href="https://isbnsearch.org/isbn/9781119320913" target="_blank" >https://isbnsearch.org/isbn/9781119320913</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Linux2022"></a>
+<p>
+The Linux Kernel Development Community. (2022). <em>Usb hotplugging</em>. Retrieved May 22, 2022, from <a href="https://www.kernel.org/doc/html/latest/driver-api/usb/hotplug.html" target="_blank"
+>https://www.kernel.org/doc/html/latest/driver-api/usb/hotplug.html</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-05-22.22sc-csc300-1.the-essential-services-of-operating-systems-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

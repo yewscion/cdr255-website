@@ -1,0 +1,1725 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-03-13.wc21-csc200-2.portfolio-project</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Portfolio Project</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+WC21-CSC200-2: Computer Science Fundamentals<br />
+Prof. Chintan Thakkar<br />
+2022-03-13
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Portfolio Project</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-3"></a>
+
+
+<p>
+In software development, algorithm design is paramount to solving even the simplest of problems. Indeed, algorithms are the verbs of computer science, and a well-designed algorithm is a crucial prerequisite to truly repeatable computation (Ewing2017).
+It is not an over-exaggeration to say that problem solving begins with algorithm design. Algorithmic problem solving is the cornerstone of computational thinking (Levitin, <a
+href="2022-03-13.wc21-csc200-2.portfolio-project.html#LWR-ht-cite.0@Levitin2018">2018</a>, p. 5), upon which all other facets thereof are built.
+</p>
+
+<p>
+It is said that great scientists always have a feeling about the direction of their research, whereas merely good scientists may charge forward blindly (Lai, <a
+href="2022-03-13.wc21-csc200-2.portfolio-project.html#LWR-ht-cite.0@Lai2017">2017</a>, p. 2). It is therefore important, when beginning a new software project, to have a clear and well-defined idea of what, exactly, the project will
+be. What problem does this project solve, and how does it solve that problem? This paper walks through a common four-part process to develop a simple algorithm, and examines the results.
+</p>
+<h4 id="autosec-4">Problem Examination</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-4"></a>
+
+
+<p>
+The problem addressed by this project is a common issue: parsing and “sanitizing” a string for use in a file name.
+</p>
+
+<p>
+There are a lot of characters one might use in a filename that could cause issues on different systems: from common characters like spaces, colons, ampersands to more obscure and unprintable Unicode characters.
+</p>
+
+<p>
+This problem can be broken into a few smaller pieces: accepting user input, substituting disallowed characters within the string, appending a file-type suffix, and returning the filename for general use (possibly to be passed to another function for output
+collection of some sort.
+</p>
+
+<p>
+In the end, the program will read a string from standard input, and reply with a string to standard output. This choice was made as it is easily redirectable and implementable as a minimal working example.
+</p>
+
+<p>
+A couple of constraints: For brevity, this implementation will only concern itself with the Latin alphabet symbols, and produce a final string in ASCII. For simplicity, immutable data structures will be used whenever possible. And the entire project will
+be packaged as a <kbd>jar</kbd> file and usable from the shell.
+</p>
+<h4 id="autosec-5">Task Layout</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-5"></a>
+
+
+<p>
+The tasks, in order, are fairly self-evident.
+</p>
+
+<p>
+First, receive a string from the user. This can be further broken down into prompting the user for input, and then in storing that input in a variable.
+</p>
+
+<p>
+Second, feed that original string through a chain of sanitization functions, each meant to deal with one of the following problems: whitespace removal, symbol substitution, and conversion to ASCII text. This new value will need to be stored in a new
+variable.
+</p>
+
+<p>
+Third, append an appropriate file extension to this file name. This is another section where input will be needed from the user, and the result stored in a new variable. Note that there should be a default (no extension) and that the actual input from the user
+will not necessarily be appended to the filename: The input should be used to append a known file type from a list. Another function needs to execute that lookup, which will be stored in a new variable.
+</p>
+
+<p>
+Fourth, the final filename should be concatenated and then returned to the user. This needn’t be stored, as the program is over at the point of return, but the program will do so anyway, in a final variable.
+</p>
+<h4 id="autosec-6">Module Development</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-6"></a>
+
+
+<p>
+Module Development took a top-down approach: Starting with the <kbd>main</kbd> method, a scanner was declared and two functions were called: <kbd>getUserInput</kbd> and <kbd>filenameOutput</kbd>. Each of these functions then
+needed to be defined; <kbd>getUserInput</kbd> called functions from the scanner passed to it and conversed with the user, and <kbd>filenameOutput</kbd> branched out into <kbd>sanitizeString</kbd> and <kbd>fileExtension</kbd>.
+While <kbd>fileExtension</kbd> passes through a chain of <kbd>if-else</kbd> statements to determine an appropriate suffix, <kbd>sanitizeString</kbd> calls a series of <em>sanitize-</em> functions that clean the string up according to
+the rules outlined above.
+</p>
+
+<p>
+At this point, a few updates were made to the specification: Latin-1 (ISO-8859-1) is just as easy to use in Java as ASCII, and provides more useful characters, so the project switched to it. A few of the intermediary variables were removed; The only
+variables living through the entirety of <kbd>main</kbd> are the user input, and the rest are never stored anywhere. And the <kbd>PortfolioProject</kbd> class was put under the <kbd>csc200</kbd> package.
+</p>
+
+<p>
+At this time, comments would normally be inserted into the code in order to document it for developers as well as actual documentation for users of the library would be composed. However, as this is a school project and not an actual software project,
+this step was omitted in order to keep the examples as minimal as possible.
+</p>
+<h4 id="autosec-7">Update</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-7"></a>
+
+
+<p>
+As this is the only time this project is likely to receive an update, the code was examined immediately.
+</p>
+
+<p>
+The algorithm for <kbd>sanitizeLatin1</kbd> was needlessly creating a secondary string as a middle-man; This was removed to optimize performance. A bug in the logic for <kbd>getUserInput</kbd> prevented the exception handling from ever
+being triggered (calling wrong exception name). This was fixed. And the conversion to and from Latin1 was (silently in <kbd>bash</kbd>, but visible in <kbd>eshell</kbd>) appending a C-style NULL character <kbd>\0</kbd> to the end of the
+filename string; This was trimmed away as it could cause issues down the road.
+</p>
+
+<p>
+At this point, unit and regression testing would begin on the algorithm, and it would be integrated into a wider ecosystem of libraries, likely revealing other improvements that should be prioritized. However, as this is an exercise for a school assignment, it
+will likely end here.
+</p>
+<h4 id="autosec-8">End Result</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-8"></a>
+
+
+<p>
+At the end, we have an executable jar file compiled with the following function:
+</p>
+
+<p>
+<kbd>jar -cvfe 2022-03-13.Portfolio-Project.jar csc200.PortfolioProject \<br />
+csc200/PortfolioProject.class</kbd>
+</p>
+
+<p>
+Upon run, it will ask the user for a filename to process as well as what type of file it is. The program currently supports Text files and Java files. Everything else does not get an extension. And it prints the complete and sanitized filename to the console
+before exiting.
+</p>
+
+<p>
+Could this code be improved? Definitely. All of the code is public in the class, it relies on hard-coded values to determine file extension, and it is interactive only: UNIX pipes will not work with it as is. However, that would be the <em>next</em> cycle
+of development for this project. As a first iteration, this project is complete.
+</p>
+<h4 id="autosec-9">Conclusion</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-9"></a>
+
+
+<p>
+There are myriad methodologies that might be employed to better design algorithms, and all will likely do things differently than presented here (Levitin, <a
+href="2022-03-13.wc21-csc200-2.portfolio-project.html#LWR-ht-cite.0@Levitin2018">2018</a>, p. 5). However, the important point of this walk-through was showing the basic process: Take a Problem, break it down into small
+pieces, implement each piece and ensure they work together as expected. This is the crucial and fundamental goal of algorithm design: solve a problem in the most efficient way possible, by examining the parts of that problem and improving
+<em>them</em> where possible.
+</p>
+
+<p>
+Creativity is just as important as reason when it comes to problem solving (Lai, <a href="2022-03-13.wc21-csc200-2.portfolio-project.html#LWR-ht-cite.0@Lai2017">2017</a>, p. 2). It is important to experiment and try new ideas,
+see what might be improved. Having a solid framework to begin with, then, allows for greater experimentation and an more cohesive creative process than sitting down at a blinking cursor having never considered the problem before. Hickey (<a
+href="2022-03-13.wc21-csc200-2.portfolio-project.html#LWR-ht-cite.0@Hickey2010">2010</a>) famously said to step away from the computer and think about something for at least an hour before beginning to write code. This
+methodology helps to enforce that kind of approach.
+</p>
+<h4 id="autosec-10">Java Implementation</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-10"></a>
+<div
+    class="fancyvrb"
+    style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#008000"
+><b>package</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+><b>csc200</b></span>;<span
+    class="textcolor"
+    style="color:#BABABA"
+>                               </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Declare our section as the package.</i></span>
+<span
+    class="textcolor"
+    style="color:#008000"
+><b>import</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+><b>java.util.Scanner</b></span>;<span
+    class="textcolor"
+    style="color:#BABABA"
+>                     </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// For parsing user input.</i></span>
+<span
+    class="textcolor"
+    style="color:#008000"
+><b>import</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+><b>java.nio.charset.StandardCharsets</b></span>;<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// For handling UTF and LATIN-1</i></span>
+
+
+<span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>class</b></span> <span
+    class="textcolor"
+    style="color:#0000FF"
+><b>PortfolioProject</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#B00040"
+><b>void</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>main</span>(String<span
+    class="textcolor"
+    style="color:#666666"
+>[]</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>args)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Handle I/O and passing down to other functions.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>Scanner<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>input<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>new</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>Scanner(System.<span
+    class="textcolor"
+    style="color:#697821"
+>in</span>);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>userInputString<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>=</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>getUserInput(input,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"Please Input a Filename: "</span>);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>userInputType<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>=</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>getUserInput(input,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"What type of file is this? "</span>);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>System.<span
+    class="textcolor"
+    style="color:#697821"
+>out</span>.<span
+    class="textcolor"
+    style="color:#697821"
+>println</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"\n"</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>+</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                               </span>filenameOutput(userInputString,
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                              </span>userInputType));
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>getUserInput</span>(Scanner<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>scanner,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>prompt)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Handle user input in a standard way, checking for no input.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>result<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>""</span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>Boolean<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>success<span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#008000"
+><b>false</b></span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>noInputMessage<span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"No input detected.\n"</span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>while</b></span>(<span
+    class="textcolor"
+    style="color:#666666"
+>!</span>success)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>System.<span
+    class="textcolor"
+    style="color:#697821"
+>out</span>.<span
+    class="textcolor"
+    style="color:#697821"
+>println</span>(prompt);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>try</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>success<span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#008000"
+><b>true</b></span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>result<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>new</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String(scanner.<span
+    class="textcolor"
+    style="color:#697821"
+>nextLine</span>());
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>if</b></span>(result.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>""</span>))<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                        </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>throw</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>new</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>IllegalArgumentException(noInputMessage);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>catch</b></span>(IllegalArgumentException<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>e)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>success<span
+    class="textcolor"
+    style="color:#666666"
+>=</span><span
+    class="textcolor"
+    style="color:#008000"
+><b>false</b></span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>System.<span
+    class="textcolor"
+    style="color:#697821"
+>out</span>.<span
+    class="textcolor"
+    style="color:#697821"
+>println</span>(noInputMessage);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>result;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>filenameOutput</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>inputName,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>inputType)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Sanitize input, append correct file extension.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>new</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>StringBuilder())
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>append</span>(sanitizeString(inputName))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>append</span>(fileExtension(inputType))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>toString</span>();
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>sanitizeString</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>x)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Delegate to dedicated sanitize- functions.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>new</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>StringBuilder())
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>append</span>(sanitizeLatin1(sanitizeSymbols(sanitizeWhitespace(x))))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>toString</span>()
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>toLowerCase</span>();
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>sanitizeWsSymbols</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Handle case where symbol is followed by space, to avoid '_-'.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>": "</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>":"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"? "</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"?"</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"& "</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>"&"</span>);
+
+
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>sanitizeWhitespace</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Remove extra whitespace at start/end, and turn spaces into dashes.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>trim</span>()
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>' '</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>'-'</span>);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>}
+
+
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>sanitizeSymbols</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Replace inappropriate characters with an underscore.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>':'</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>'_'</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>'?'</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>'_'</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>'&'</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>'_'</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>replace</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>'$'</span>,<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>'_'</span>);
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>sanitizeLatin1</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>string)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Convert the string to Latin1 and back to remove UTF-8 chars.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>new</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String(StandardCharsets.<span
+    class="textcolor"
+    style="color:#697821"
+>ISO_8859_1</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>encode</span>(string)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>array</span>(),
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                                </span>StandardCharsets.<span
+    class="textcolor"
+    style="color:#697821"
+>UTF_8</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                   </span>.<span
+    class="textcolor"
+    style="color:#697821"
+>trim</span>());<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Needed to remove trailing \0.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span>}
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>public</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>static</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#0000FF"
+>fileExtension</span>(String<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>x)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>{
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#3D7A7A"
+><i>// Hardcoded guesses at user input to look up file ext. Default to none.</i></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>if</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"txt"</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>||</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"TXT"</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>||</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"text"</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>||</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"TEXT"</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>||</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span>x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"t"</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>".txt"</span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>else</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>if</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"java"</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>||</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"JAVA"</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>||</span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                    </span>x.<span
+    class="textcolor"
+    style="color:#697821"
+>equals</span>(<span
+    class="textcolor"
+    style="color:#BA2121"
+>"j"</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>".java"</span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>        </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>else</b></span>
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>               </span><span
+    class="textcolor"
+    style="color:#008000"
+><b>return</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#BA2121"
+>""</span>;
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>    </span>}
+}
+</pre>
+</div>
+<h4 id="autosec-13">References</h4>
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autopage-13"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Hickey2010"></a>
+<p>
+Hickey, R. (2010, October 23). <em>Step away from the computer: Hammock driven development</em> (M. Courtney, Ed.). ClojureTV. Retrieved January 30, 2022, from <a href="https://www.youtube.com/watch?v=f84n5oFoZBc"
+target="_blank" >https://www.youtube.com/watch?v=f84n5oFoZBc</a> Live Recording Published on Youtube on 2012-12-26
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Lai2017"></a>
+<p>
+Lai, A. (2017). Ada Lovelace: ‘poetical scientist’. <em>OR/MS Today</em>, <em>44</em>(1). Retrieved January 23, 2022, from <a
+href="https://www.informs.org/ORMS-Today/Public-Articles/February-Volume-44-Number-1/Ada-Lovelace-poetical-scientist" target="_blank"
+>https://www.informs.org/ORMS-Today/Public-Articles/February-Volume-44-Number-1/Ada-Lovelace-poetical-scientist</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Levitin2018"></a>
+<p>
+Levitin, A. (2018). On two algorithm design techniques (J. Meinke, Ed.). <em>Journal of Computing Sciences in Colleges</em>, <em>33</em>(3), 5–11. <a href="https://doi.org/10.5555/3144687.3144688" target="_blank"
+>https://doi.org/10.5555/3144687.3144688</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-03-13.wc21-csc200-2.portfolio-project-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

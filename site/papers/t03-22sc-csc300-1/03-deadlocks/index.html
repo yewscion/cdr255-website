@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-06-05.22sc-csc300-1.deadlocks</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Deadlocks</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+22SC-CSC300-1: Operating Systems and Architecture<br />
+Dr. Jonathan Vanover<br />
+2022-06-05
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Deadlocks</h4>
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autopage-3"></a>
+
+
+<p>
+In multi-threaded computing, “threads” are lightweight processes that can run concurrently with one another and share resources (Serrano et al., <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Serrano2004">2004</a>, p. 203). This is a boon for computing efficiency, but it also introduces a few novel problems that can often be difficult to diagnose, track, and fix:
+As noted by Cai and Cao (<a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Cai2016">2016</a>), manually fixing these problems is error prone, tedious, and (in general) an unsolved problem (p. 1109) that is best
+prevented and avoided rather than fixed after the fact.
+</p>
+
+<p>
+The main issue this paper focuses on is related to synchronization, or “Making sure processes stay in sync as they run concurrently”. Specifically, this paper addresses the <em>Deadlock</em>: one of three common synchronization errors (the other two
+being data races and atomicity violations) that is said to occur when some threads are irrevocably blocked from making further progress (Agarwal &amp; Stoller, <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Agarwal2006">2006</a>, p. 51).
+</p>
+<h4 id="autosec-4">Deadlock Characteristics</h4>
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autopage-4"></a>
+
+
+<p>
+Deadlock bugs are different from other types of synchronization bugs because they are not the result of missed synchronizations, but are the result instead of incorrect synchronization instructions in the first place—And this difference is so monumental
+that it has resulted in many techniques focused on mitigating synchronization bugs classifying such bugs as either “deadlock” or “non-deadlock” bugs (Cai &amp; Cao, <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Cai2016">2016</a>, p. 1109).
+</p>
+
+<p>
+It’s worth mentioning the distinction between “Deadlock”, which this paper focuses on, and the rarer case of “Livelock”, where processes continually reattempt a failing action and therefore cannot succeed (Silberschatz et al., <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>, p. 321). In deadlocks, progress cannot continue due to endless waiting for resources. In livelocks, progress cannot continue
+<em>and</em> resources are being consumed by constantly-failing repetition.
+</p>
+
+<p>
+There are generally two categories of deadlocks: “Resource Deadlocks”—when a set of threads are holding some locks and waiting for other locks held by members of their own set—and “Communication Deadlocks”—when threads are awaiting a
+message or group of messages that will never arrive (Cai &amp; Cao, <a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Cai2016">2016</a>, p. 1109). Both arise from a failure in the logic of a concurrent system, and
+both need to be accounted for when designing concurrent systems.
+</p>
+
+<p>
+Both also satisfy what Silberschatz et al. (<a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>) deem to be the conditions necessary to produce a deadlock: At least one resource is
+non-shareable (“Mutual Exclusion”, a thread is waiting for additional resources while holding a resource (“Hold and Wait”), a resource cannot be released preemptively from a process before its completion (“No Preemption”), and the processes are
+waiting in a cyclic graph of some form (“Circular Wait”) (p. 321). These four traits are useful because they are easy to conceptualize, and therefore easy to notice within a system design as it is being built.
+</p>
+<h4 id="autosec-5">Prevention and Avoidance</h4>
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autopage-5"></a>
+
+
+<p>
+One general approach to avoiding synchronization issues is to introduce “gate locks”, which are locks that are inserted specifically to allow processes to re-sync after drift might have occurred by serializing otherwise concurrent execution (Cai &amp;
+Cao, <a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Cai2016">2016</a>, p. 1109).. Other general approaches for synchronization issue prevention is the concept of “semaphores”—which can be used to create either
+be single- or dual-alternative decision-structure-like synchronization, and therefore add a large amount of complexity to programs—or “condition variables”—which allow for a more event-like signaling structure of synchronization (Agarwal &amp;
+Stoller, <a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Agarwal2006">2006</a>, p. 51).
+</p>
+
+<p>
+However, all of these have the potential to create new deadlocks from their implementation, and therefore are <em>not</em> a “one-size-fits-all” solution to avoiding deadlocks—and such a thing may not exist, as each situation may need some
+combination of solutions to address (Agarwal &amp; Stoller, <a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Agarwal2006">2006</a>, p. 51; Cai &amp; Cao, <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Cai2016">2016</a>, pp. 1109–1110; Silberschatz et al., <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>, p. 326).
+</p>
+
+<p>
+Silberschatz et al. (<a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>) assert that there are three basic solutions available to deal with the deadlock problem which can be succinctly
+described as “Ignore the Problem”, “Protocol-based prevention or avoidance”, and “Detection after Deadlocks occur” (p. 326). Most modern operating systems use the first, applications generally try to implement the second, and the third is (rarely) used
+in specific systems (such as databases).
+</p>
+
+<p>
+As it is the most common, this paper will focus on the second solution, “Protocol-based prevention or avoidance”. In this context, “Prevention” means putting rules in place to make it so that one of the four required conditions for a deadlock simply cannot
+occur. And “Avoidance” means to provide the Operating System with information about the resources a process may need during its execution, and allowing it to decide how and when to allow the processes to execute or wait (Silberschatz et al., <a
+href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>, p. 326).
+</p>
+
+<p>
+In terms of prevention, the only generally-applicable method available is to prevent the “Circular Wait” condition from occurring through an ordered allocation of resources across all processes. The other conditions are either impractical outside of
+specific situations (“No Preemption”) or ineffective and prone to causing other issues (the others) (Silberschatz et al., <a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>, pp. 326–328).
+</p>
+
+<p>
+In terms of avoidance, the main solution of providing the kernel with information about what resources will be requested by each thread as it is spawned is only somewhat varied over the different solutions presented: In the simplest, the
+<em>maximum</em> for each resource is provided to the kernel. In the most complex, a more accurate amount of each resource is requested, and then various states and graphs are constructed by the OS to make a best-effort solution (Silberschatz et al.,
+<a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Silberschatz2018c8">2018</a>, pp. 330–336).
+</p>
+<h4 id="autosec-6">Conclusion</h4>
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autopage-6"></a>
+
+
+<p>
+Deadlocks are a problem that arises from faulty logic, not from emergent circumstance (Cai &amp; Cao, <a href="2022-06-05.22sc-csc300-1.deadlocks.html#LWR-ht-cite.0@Cai2016">2016</a>, p. 1109) and therefore cannot be trivially
+“solved for” once they occur, at least in operating systems as they exist today. Avoidance and Prevention are the best tools we, as programmers, have to attempt to deal with the deadlock problem, and though research on new methodologies to apply one or
+the other (or both) are constantly being researched, no clear solution has been created yet. However, remaining knowledgeable about deadlocks (what they are, how they occur, how to protect against them) will always be a useful tool when it comes to
+creating better and more resilient systems for people to use.
+</p>
+<h4 id="autosec-7">References</h4>
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autopage-7"></a>
+
+
+<ul style="list-style-type:none">
+
+
+<li>
+<a id="LWR-ht-cite.0@Agarwal2006"></a>
+<p>
+Agarwal, R., &amp; Stoller, S. D. (2006, July 17). Run-time detection of potential deadlocks for programs with locks, semaphores, and condition variables. In L. Pollock &amp; M. Pezzé (Eds.), <em>Padtad ’06: Proceedings of the 2006 workshop on
+parallel and distributed systems: Testing and debugging</em> (pp. 51–60). Association for Computing Machinery (ACM). <a href="https://doi.org/10.1145/1147403.1147413" target="_blank"
+>https://doi.org/10.1145/1147403.1147413</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Cai2016"></a>
+<p>
+Cai, Y., &amp; Cao, L. (2016, May 14). Fixing deadlocks via lock pre-acquisitions. In H. Asuncion, C. Zhang, &amp; X. Zhang (Eds.), <em>Icse ’16: Proceedings of the 38th international conference on software engineering</em> (pp. 1109–1120).
+Association for Computing Machinery (ACM). <a href="https://doi.org/10.1145/2884781.2884819" target="_blank" >https://doi.org/10.1145/2884781.2884819</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Serrano2004"></a>
+<p>
+Serrano, M., Boussinot, F., &amp; Serpette, B. (2004, August 24). Scheme fair threads. In D. S. Warren &amp; E. Moggi (Eds.), <em>Ppdp ’04: Proceedings of the 6th acm sigplan international conference on principles and practice of declarative
+programming</em> (pp. 203–214). Association for Computing Machinery. <a href="https://doi.org/10.1145/1013963.1013986" target="_blank" >https://doi.org/10.1145/1013963.1013986</a>
+</p>
+
+
+</li>
+<li>
+<a id="LWR-ht-cite.0@Silberschatz2018c8"></a>
+<p>
+Silberschatz, A., Galvin, P. B., &amp; Gagne, G. (2018, May 4). Synchronization tools. In D. Fowley, R. Dannelly, C. Nelson, K. Santor, &amp; A. Pham (Eds.), <em>Operating system concepts</em> (10th&nbsp;ed., pp. 317–346). Wiley. <a
+href="https://isbnsearch.org/isbn/9781119320913" target="_blank" >https://isbnsearch.org/isbn/9781119320913</a>
+</p>
+</li>
+</ul>
+
+<a id="2022-06-05.22sc-csc300-1.deadlocks-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>

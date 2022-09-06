@@ -1,0 +1,1005 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+<meta charset="UTF-8" />
+<meta name="generator" content="LaTeX Lwarp package" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<!--[if lt IE 9]>
+<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+<![endif]-->
+<title>2022-02-20.wc21-csc200-2.portfolio-milestone-ii</title>
+<link rel="stylesheet" type="text/css" href="https://cdr255.com/css/lwarp-cdr255.css" />
+
+<script>
+// Lwarp MathJax emulation code
+//
+// Based on code by Davide P. Cervone.
+// Equation numbering: https://github.com/mathjax/MathJax/issues/2427
+// Starred and ifnextchar macros: https://github.com/mathjax/MathJax/issues/2428
+// \left, \right delimiters: https://github.com/mathjax/MathJax/issues/2535
+//
+// Modified by Brian Dunn to adjust equation numbering and add subequations.
+//
+// LaTeX can use \seteqnumber{subequations?}{section}{number} before each equation.
+// subequations? is 0 usually, 1 if inside subequations.
+// section is a string printed as-is, or empty.
+// number is auto-incremented by MathJax between equations.
+//
+MathJax = {
+    subequations: "0",
+    section: "",
+    loader: {
+         load: ['[tex]/tagformat', '[tex]/textmacros'],
+    },
+    startup: {
+         ready() {
+             //       These would be replaced by import commands if you wanted to make
+             //       a proper extension.
+             const Configuration = MathJax._.input.tex.Configuration.Configuration;
+             const CommandMap = MathJax._.input.tex.SymbolMap.CommandMap;
+             const Macro = MathJax._.input.tex.Symbol.Macro;
+             const TexError = MathJax._.input.tex.TexError.default;
+             const ParseUtil = MathJax._.input.tex.ParseUtil.default;
+             const expandable = MathJax._.util.Options.expandable;
+
+
+             //       Insert the replacement string into the TeX string, and check
+             //       that there haven't been too many maxro substitutions (prevents
+             //       infinite loops).
+             const useArgument = (parser, text) => {
+                 parser.string = ParseUtil.addArgs(parser, text, parser.string.slice(parser.i));
+                 parser.i = 0;
+                 if (++parser.macroCount > parser.configuration.options.maxMacros) {
+                     throw new TexError('MaxMacroSub1',
+                     'MathJax maximum macro substitution count exceeded; ' +
+                     'is there a recursive macro call?');
+                 }
+             }
+
+
+             //       Create the command map for:
+             //          \ifstar, \ifnextchar, \ifblank, \ifstrequal, \seteqnumber
+             new CommandMap('Lwarp-macros', {
+                 ifstar: 'IfstarFunction',
+                 ifnextchar: 'IfnextcharFunction',
+                 ifblank: 'IfblankFunction',
+                 ifstrequal: 'IfstrequalFunction',
+                 seteqnumber: 'SeteqnumberFunction'
+             }, {
+                 //      This function implements an ifstar macro.
+                 IfstarFunction(parser, name) {
+                     const resultstar = parser.GetArgument(name);
+                     const resultnostar = parser.GetArgument(name);
+                     const star = parser.GetStar();                        // true if there is a *
+                     useArgument(parser, star ? resultstar : resultnostar);
+                 },
+
+
+                 //      This function implements an ifnextchar macro.
+                 IfnextcharFunction(parser, name) {
+                     let whichchar = parser.GetArgument(name);
+                     if (whichchar.match(/^(?:0x[0-9A-F]+|[0-9]+)$/i)) {
+                         // $ syntax highlighting
+                         whichchar = String.fromCodePoint(parseInt(whichchar));
+                     }
+                     const resultnextchar = parser.GetArgument(name);
+                     const resultnotnextchar = parser.GetArgument(name);
+                     const gotchar = (parser.GetNext() === whichchar);
+                     useArgument(parser, gotchar ? resultnextchar : resultnotnextchar);
+                 },
+
+
+                 // This function implements an ifblank macro.
+                 IfblankFunction(parser, name) {
+                     const blankarg = parser.GetArgument(name);
+                     const resultblank = parser.GetArgument(name);
+                     const resultnotblank = parser.GetArgument(name);
+                     const isblank = (blankarg.trim() == "");
+                     useArgument(parser, isblank ? resultblank : resultnotblank);
+                 },
+
+
+                 // This function implements an ifstrequal macro.
+                 IfstrequalFunction(parser, name) {
+                     const strequalfirst = parser.GetArgument(name);
+                     const strequalsecond = parser.GetArgument(name);
+                     const resultequal = parser.GetArgument(name);
+                     const resultnotequal = parser.GetArgument(name);
+                     const isequal = (strequalfirst == strequalsecond);
+                     useArgument(parser, isequal ? resultequal : resultnotequal);
+                 },
+
+
+                 //      This function modifies the equation numbers.
+                 SeteqnumberFunction(parser, name) {
+                         //   Get the macro parameters
+                         const star = parser.GetStar();                       // true if there is a *
+                         const optBrackets = parser.GetBrackets(name);        // contents of optional brackets
+                         const newsubequations = parser.GetArgument(name);       // the subequations argument
+                         const neweqsection = parser.GetArgument(name);       // the eq section argument
+                         const neweqnumber = parser.GetArgument(name);        // the eq number argument
+                         MathJax.config.subequations=newsubequations ;        // a string with boolean meaning
+                         MathJax.config.section=neweqsection ;                // a string with numeric meaning
+                         parser.tags.counter = parser.tags.allCounter = neweqnumber ;
+                 }
+
+
+             });
+
+
+             //       Create the Lwarp-macros package
+             Configuration.create('Lwarp-macros', {
+                 handler: {macro: ['Lwarp-macros']}
+             });
+
+
+             MathJax.startup.defaultReady();
+
+
+             // For forward references:
+             MathJax.startup.input[0].preFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         MathJax.config.subequations = math.inputData.recompile.subequations;
+                         MathJax.config.section = math.inputData.recompile.section;
+                 }
+             });
+             MathJax.startup.input[0].postFilters.add(({math}) => {
+                 if (math.inputData.recompile){
+                         math.inputData.recompile.subequations = MathJax.config.subequations;
+                         math.inputData.recompile.section = MathJax.config.section;
+                 }
+             });
+
+
+                 // For \left, \right with unicode-math:
+                 const {DelimiterMap} = MathJax._.input.tex.SymbolMap;
+                 const {Symbol} = MathJax._.input.tex.Symbol;
+                 const {MapHandler} = MathJax._.input.tex.MapHandler;
+                 const delimiter = MapHandler.getMap('delimiter');
+                 delimiter.add('\\lBrack', new Symbol('\\lBrack', '\u27E6'));
+                 delimiter.add('\\rBrack', new Symbol('\\rBrack', '\u27E7'));
+                 delimiter.add('\\lAngle', new Symbol('\\lAngle', '\u27EA'));
+                 delimiter.add('\\rAngle', new Symbol('\\rAngle', '\u27EB'));
+                 delimiter.add('\\lbrbrak', new Symbol('\\lbrbrak', '\u2772'));
+                 delimiter.add('\\rbrbrak', new Symbol('\\rbrbrak', '\u2773'));
+                 delimiter.add('\\lbag', new Symbol('\\lbag', '\u27C5'));
+                 delimiter.add('\\rbag', new Symbol('\\rbag', '\u27C6'));
+                 delimiter.add('\\llparenthesis', new Symbol('\\llparenthesis', '\u2987'));
+                 delimiter.add('\\rrparenthesis', new Symbol('\\rrparenthesis', '\u2988'));
+                 delimiter.add('\\llangle', new Symbol('\\llangle', '\u2989'));
+                 delimiter.add('\\rrangle', new Symbol('\\rrangle', '\u298A'));
+                 delimiter.add('\\Lbrbrak', new Symbol('\\Lbrbrak', '\u27EC'));
+                 delimiter.add('\\Rbrbrak', new Symbol('\\Rbrbrak', '\u27ED'));
+                 delimiter.add('\\lBrace', new Symbol('\\lBrace', '\u2983'));
+                 delimiter.add('\\rBrace', new Symbol('\\rBrace', '\u2984'));
+                 delimiter.add('\\lParen', new Symbol('\\lParen', '\u2985'));
+                 delimiter.add('\\rParen', new Symbol('\\rParen', '\u2986'));
+                 delimiter.add('\\lbrackubar', new Symbol('\\lbrackubar', '\u298B'));
+                 delimiter.add('\\rbrackubar', new Symbol('\\rbrackubar', '\u298C'));
+                 delimiter.add('\\lbrackultick', new Symbol('\\lbrackultick', '\u298D'));
+                 delimiter.add('\\rbracklrtick', new Symbol('\\rbracklrtick', '\u298E'));
+                 delimiter.add('\\lbracklltick', new Symbol('\\lbracklltick', '\u298F'));
+                 delimiter.add('\\rbrackurtick', new Symbol('\\rbrackurtick', '\u2990'));
+                 delimiter.add('\\langledot', new Symbol('\\langledot', '\u2991'));
+                 delimiter.add('\\rangledot', new Symbol('\\rangledot', '\u2992'));
+                 delimiter.add('\\lparenless', new Symbol('\\lparenless', '\u2993'));
+                 delimiter.add('\\rparengtr', new Symbol('\\rparengtr', '\u2994'));
+                 delimiter.add('\\Lparengtr', new Symbol('\\Lparengtr', '\u2995'));
+                 delimiter.add('\\Rparenless', new Symbol('\\Rparenless', '\u2996'));
+                 delimiter.add('\\lblkbrbrak', new Symbol('\\lblkbrbrak', '\u2997'));
+                 delimiter.add('\\rblkbrbrak', new Symbol('\\rblkbrbrak', '\u2998'));
+                 delimiter.add('\\lvzigzag', new Symbol('\\lvzigzag', '\u29D8'));
+                 delimiter.add('\\rvzigzag', new Symbol('\\rvzigzag', '\u29D9'));
+                 delimiter.add('\\Lvzigzag', new Symbol('\\Lvzigzag', '\u29DA'));
+                 delimiter.add('\\Rvzigzag', new Symbol('\\Rvzigzag', '\u29DB'));
+                 delimiter.add('\\lcurvyangle', new Symbol('\\lcurvyangle', '\u29FC'));
+                 delimiter.add('\\rcurvyangle', new Symbol('\\rcurvyangle', '\u29FD'));
+                 delimiter.add('\\Vvert', new Symbol('\\Vvert', '\u2980'));
+         }       // ready
+    },           // startup
+
+
+    tex: {
+         packages: {'[+]': ['tagformat', 'Lwarp-macros', 'textmacros']},
+         tags: "ams",
+                 tagformat: {
+                         number: function (n) {
+                              if(MathJax.config.subequations==0)
+                                     return(MathJax.config.section + n);
+                              else
+                                     return(MathJax.config.section + String.fromCharCode(96+n));
+                         },
+                 },
+    }
+}
+</script>
+
+
+<script
+         id="MathJax-script"
+         src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"
+></script>
+
+</head>
+<body>
+
+<div class="bodywithoutsidetoc" >
+
+
+<div class="bodycontainer" >
+
+
+<section class="textbody" >
+
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autofile-0"></a>
+
+<!--MathJax customizations:-->
+
+
+<div class="hidden" >
+
+\(\newcommand{\footnotename}{footnote}\)
+
+\(\def \LWRfootnote {1}\)
+
+\(\newcommand {\footnote }[2][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\newcommand {\footnotemark }[1][\LWRfootnote ]{{}^{\mathrm {#1}}}\)
+
+\(\let \LWRorighspace \hspace \)
+
+\(\renewcommand {\hspace }{\ifstar \LWRorighspace \LWRorighspace }\)
+
+\(\newcommand {\mathnormal }[1]{{#1}}\)
+
+\(\newcommand \ensuremath [1]{#1}\)
+
+\(\newcommand {\LWRframebox }[2][]{\fbox {#2}} \newcommand {\framebox }[1][]{\LWRframebox } \)
+
+\(\newcommand {\setlength }[2]{}\)
+
+\(\newcommand {\addtolength }[2]{}\)
+
+\(\newcommand {\setcounter }[2]{}\)
+
+\(\newcommand {\addtocounter }[2]{}\)
+
+\(\newcommand {\arabic }[1]{}\)
+
+\(\newcommand {\number }[1]{}\)
+
+\(\newcommand {\noalign }[1]{\text {#1}\notag \\}\)
+
+\(\newcommand {\cline }[1]{}\)
+
+\(\newcommand {\directlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\luatexdirectlua }[1]{\text {(directlua)}}\)
+
+\(\newcommand {\protect }{}\)
+
+\(\def \LWRabsorbnumber #1 {}\)
+
+\(\def \LWRabsorbquotenumber &quot;#1 {}\)
+
+\(\newcommand {\LWRabsorboption }[1][]{}\)
+
+\(\newcommand {\LWRabsorbtwooptions }[1][]{\LWRabsorboption }\)
+
+\(\def \mathchar {\ifnextchar &quot;\LWRabsorbquotenumber \LWRabsorbnumber }\)
+
+\(\def \mathcode #1={\mathchar }\)
+
+\(\let \delcode \mathcode \)
+
+\(\let \delimiter \mathchar \)
+
+\(\let \LWRref \ref \)
+
+\(\renewcommand {\ref }{\ifstar \LWRref \LWRref }\)
+
+</div>
+
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-1"></a>
+<div class="titlepage" >
+<div class="center" >
+
+<p>
+<b>Portfolio Milestone II</b><br />
+Christopher Rodriguez<br />
+Colorado State University Global<br />
+WC21-CSC200-2: Computer Science Fundamentals<br />
+Prof. Chintan Thakkar<br />
+2022-02-20
+</p>
+</div>
+
+</div>
+<h4 id="autosec-3">Portfolio Milestone II</h4>
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-3"></a>
+
+
+<p>
+This is the second portfolio milestone for my class, where I will demonstrate knowledge of queues, stacks, and basic algorithm design.
+</p>
+
+<p>
+I have chosen to use <em>Guile Scheme</em> as my form of (pseudo)code, as I am familiar with it and it is quite brief. Using an executable language as one’s pseudocode allows for a confirmation of whether specific program flows will work.
+</p>
+
+<p>
+In order to keep things brief, I’ve also used global variables and mutability to simplify the assignment and comparison functions. This would be avoided if this were not a pseudocode-level work: The important thing here was to show the algorithms and
+the program flow, not the overall structure.
+</p>
+
+<p>
+And in order to quell confusion, I am using the queue library provided by Guile as my stack and queue objects, rather than implementing my own. For the stack-based operations, I have ensured a LIFO operative restriction remains throughout.
+</p>
+
+<p>
+There are four tasks put forth for this milestone:
+</p>
+
+<ul style="list-style-type:none">
+
+<li>
+<p>
+1. Write an algorithm that sets last equal to the last element in a queue, leaving the queue unchanged.
+</p>
+
+</li>
+<li>
+<p>
+2. Write an algorithm to create a copy of myQueue, leaving myQueue unchanged.
+</p>
+
+</li>
+<li>
+<p>
+3. Write an algorithm Replace that takes a stack and two items. If the first item is in the stack, replace it with the second item, leaving the rest of the stack unchanged.
+</p>
+
+</li>
+<li>
+<p>
+4. Write an algorithm Replace that takes a queue and two items. If the first item is in the queue, replace it with the second item, leaving the rest of the queue unchanged.
+</p>
+</li>
+</ul>
+<h4 id="autosec-4">Last Element of Queue</h4>
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-4"></a>
+
+
+<p>
+This is much more straightforward than it was for a Stack, which really does highlight the major difference between a Stack and a Queue: With a queue, You can access the head <em>and</em> the tail.
+</p>
+
+<p>
+As we are not changing this queue at all, it is really just two function calls: The first, to return the tail of the queue. And the second, to assign that value to <kbd>last</kbd>.
+</p>
+
+<p>
+Here is an implementation in GNU Guile:
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>*last*</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-rear</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>my-queue</span>))
+</pre>
+</div>
+<h4 id="autosec-6">Copy Queue</h4>
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-6"></a>
+
+
+<p>
+Rather than using recursion as was needed for the non-destructive stack copy in the previous milestone, we can instead use a simple <kbd>loop</kbd> to complete this task.
+</p>
+
+<p>
+The basic structure of this algorithm will be to make a new, empty queue, pop the first member of the original queue off, and then enqueue that same member onto both the new and the original structure. This sequence is repeated until both the original
+queue and the new queue are the same length, at which point the new queue is returned. Storing the return of this algorithm in a variable effectively copies the original queue while leaving it in its original state.
+</p>
+
+<p>
+The reason to create a new queue within the algorithm (as opposed to taking a pre-existing, empty queue) is to ensure there is no state transferred in: a new queue will always be empty, whereas a queue that is passed in has the change of not starting as a
+clean slate.
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>copy-q</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>let</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>members</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-length</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>new</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>make-q</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>while</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-length</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)<span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>members</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>enq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-pop!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>enq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-rear</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>))
+</pre>
+</div>
+<h4 id="autosec-8">Replace Item in Stack</h4>
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-8"></a>
+
+
+<p>
+Both of these replace functions are heavily based on the Copy functions formerly presented: What is replacing an item in a stack or queue, aside from making a copy of it, in place, with a specific modification?
+</p>
+
+<p>
+For the stack version, we will recurse again, but without the second stack this time: Each item of the stack will be popped off of it until the stack is empty. Then, we’ll push each item back on to the stack, checking at each push whether the item matches
+our first (<kbd>original</kbd>) argument. If it does, we push our second (<kbd>new</kbd>) argument instead of the original item, which effectively is discarded.
+</p>
+
+<p>
+This leaves us with a stack that has a single item replaced.
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>replace-item-in-stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>let</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>curr-value</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-pop!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>unless</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-empty?</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>replace-item-in-stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>if</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-push!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-push!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>stack</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span>))))
+</pre>
+</div>
+<h4 id="autosec-10">Replace Item in Queue</h4>
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-10"></a>
+
+
+<p>
+For the queue version of this function, we will base our flow on the copy function presented above.
+</p>
+
+<p>
+We will loop through a sequence the same number of times as there are items in the queue. In that sequence, we will pop the first member off of the queue, and compare it to our first (<kbd>original</kbd>) argument. If there’s a match, we will then
+enqueue the second (<kbd>new</kbd>) argument instead. Otherwise, we will re-enqueue the member that was popped.
+</p>
+<div
+     class="fancyvrb"
+     style=""
+>
+<pre class="verbatim">
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>   </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>define</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>replace-item-in-queue</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>      </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>let</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>members</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-length</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>       </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>do</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>current-member</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#666666"
+>0</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>1+</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>current-member</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>((<span
+    class="textcolor"
+    style="color:#008000"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>current-member</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>members</span>))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>         </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>let</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>((<span
+    class="textcolor"
+    style="color:#0000FF"
+>curr-value</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>q-pop!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span>)))
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>           </span>(<span
+    class="textcolor"
+    style="color:#008000"
+><b>if</b></span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span>(<span
+    class="textcolor"
+    style="color:#008000"
+>=</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>original</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                 </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>enq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>new</span>)
+<span
+    class="textcolor"
+    style="color:#BABABA"
+>                 </span>(<span
+    class="textcolor"
+    style="color:#0000FF"
+>enq!</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>queue</span><span
+    class="textcolor"
+    style="color:#BABABA"
+> </span><span
+    class="textcolor"
+    style="color:#1A177D"
+>curr-value</span>))))))
+</pre>
+</div>
+<h4 id="autosec-12">Conclusion</h4>
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autopage-12"></a>
+
+
+<p>
+It’s worth mentioning here how these last two algorithms could be broken down into a few simpler ones: The check could be its own function, as it is always (regardless of whether in the stack or queue version) comparing <kbd>curr-value</kbd> to
+<kbd>original</kbd>. We could also make these implementations more functional by building a new data structure within the context of the algorithm and returning it, as opposed to mutating the original functions. There is lots of room for
+optimization.
+</p>
+
+<p>
+This demonstrates the requested tasks in an abstract, algorithmic form, however, and should suffice.
+</p>
+
+<a id="2022-02-20.wc21-csc200-2.portfolio-milestone-ii-autofile-last"></a> </section>
+
+</div>
+
+</div>
+
+</body>
+</html>
